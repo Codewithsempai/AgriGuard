@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="18" fill="#09090b"/>
+  <rect x="1" y="1" width="62" height="62" rx="17" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+  <path d="M10 54s13-3 21-13c7-9 8-19 23-31-14 19-24 20-33 27-7 6-11 17-11 17z" fill="url(#leaf_gradient)" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M25 39l10-10" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  <path d="M32 32l8-3" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  <path d="M28 44l3-7" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="44" cy="18" r="3.5" fill="#FFFFFF"/>
+  <defs>
+    <linearGradient id="leaf_gradient" x1="10" y1="54" x2="54" y2="10" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#71717A" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+</svg>
