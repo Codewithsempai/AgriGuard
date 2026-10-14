@@ -42,10 +42,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [token]);
 
   const login = async (email: string, pass: string): Promise<User> => {
-    const formData = new FormData();
-    formData.append('username', email);
-    formData.append('password', pass);
-    const res = await api.login(formData);
+    const params = new URLSearchParams();
+    params.append('username', email.trim());
+    params.append('password', pass);
+    const res = await api.login(params);
     setToken(res.access_token);
     setUser(res.user);
     localStorage.setItem('agriguard_token', res.access_token);

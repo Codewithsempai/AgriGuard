@@ -6,11 +6,28 @@ import type {
   ReportSummary, WeatherData
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+export const PRODUCTION_API_URL = 'https://agriguard-api-0115.onrender.com/api/v1';
+
+const isLocalhost =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+export const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  (isLocalhost && import.meta.env.DEV ? '/api/v1' : PRODUCTION_API_URL);
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
 });
+
+export const getAssetUrl = (path?: string) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('blob:') || path.startsWith('data:')) {
+    return path;
+  }
+  const backendOrigin = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+  return `${backendOrigin}${path.startsWith('/') ? '' : '/'}${path}`;
+};
 
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('agriguard_token');
@@ -37,8 +54,20 @@ export const api = {
   register: (data: { email: string; name: string; password: string }) =>
     apiClient.post<User>('/auth/register', data).then(r => r.data),
     
-  login: (data: FormData) =>
-    apiClient.post<{ access_token: string; token_type: string; user: User }>('/auth/login', data).then(r => r.data),
+  login: (data: FormData | URLSearchParams | { username: string; password: string }) => {
+    let body: any = data;
+    const headers: Record<string, string> = {};
+    if (!(data instanceof FormData) && !(data instanceof URLSearchParams)) {
+      const params = new URLSearchParams();
+      params.append('username', (data as any).username || (data as any).email);
+      params.append('password', (data as any).password);
+      body = params;
+    }
+    if (body instanceof URLSearchParams) {
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    }
+    return apiClient.post<{ access_token: string; token_type: string; user: User }>('/auth/login', body, { headers }).then(r => r.data);
+  },
     
   getMe: () =>
     apiClient.get<User>('/auth/me').then(r => r.data),
@@ -51,7 +80,13 @@ export const api = {
 
   // Dashboard
   getDashboard: () =>
-    apiClient.get<DashboardStats>('/dashboard').then(r => r.data),
+    apiClient.get<DashboardStats>('/dashboard').then(r => ({
+      ...r.data,
+      recent_disease: r.data.recent_disease?.map(d => ({
+        ...d,
+        image_url: getAssetUrl(d.image_url)
+      }))
+    })),
 
   // Farms
   getFarms: (q?: string) =>
@@ -127,9 +162,17 @@ export const api = {
   predictDisease: (formData: FormData) =>
     apiClient.post<DiseasePredictionResponse>('/disease/predict', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
-    }).then(r => r.data),
+    }).then(r => ({
+      ...r.data,
+      image_url: getAssetUrl(r.data.image_url)
+    })),
   getDiseaseHistory: () =>
-    apiClient.get<DiseaseHistoryItem[]>('/disease/history').then(r => r.data),
+    apiClient.get<DiseaseHistoryItem[]>('/disease/history').then(r =>
+      r.data.map(item => ({
+        ...item,
+        image_url: getAssetUrl(item.image_url)
+      }))
+    ),
   deleteDiseaseHistoryItem: (id: number) =>
     apiClient.delete(`/disease/history/${id}`).then(r => r.data),
   clearAllDiseaseHistory: () =>

@@ -63,10 +63,25 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration for Vite local development
+# CORS configuration for local development and Cloudflare Pages production
+ALLOWED_ORIGINS = [
+    "https://agriguards.pages.dev",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+]
+
+env_origins = os.getenv("CORS_ORIGINS")
+if env_origins:
+    for o in env_origins.split(","):
+        o_clean = o.strip()
+        if o_clean and o_clean not in ALLOWED_ORIGINS:
+            ALLOWED_ORIGINS.append(o_clean)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=r"https://.*\.pages\.dev",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
