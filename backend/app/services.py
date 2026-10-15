@@ -287,7 +287,8 @@ def fetch_weather(lat, lon):
         "longitude": lon,
         "timezone": "auto",
         "current": "temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m",
-        "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code",
+        "hourly": "precipitation,precipitation_probability,wind_speed_10m,relative_humidity_2m",
+        "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weather_code",
         "forecast_days": 7
     }
     r = httpx.get(url, params=params, timeout=10)

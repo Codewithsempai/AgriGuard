@@ -222,11 +222,19 @@ export interface WeatherData {
       weather_code: number;
       wind_speed_10m: number;
     };
+    hourly?: {
+      time: string[];
+      precipitation?: number[];
+      precipitation_probability?: number[];
+      wind_speed_10m?: number[];
+      relative_humidity_2m?: number[];
+    };
     daily?: {
       time: string[];
       temperature_2m_max: number[];
       temperature_2m_min: number[];
       precipitation_sum: number[];
+      precipitation_probability_max?: number[];
       weather_code: number[];
     };
   };

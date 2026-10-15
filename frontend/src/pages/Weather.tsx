@@ -8,6 +8,7 @@ import { api } from '../services/api';
 import type { Farm, WeatherData } from '../types';
 import { LoadingSkeleton } from '../components/EmptyState';
 import { useLanguage } from '../context/LanguageContext';
+import { computeSprayAdvisory } from '../utils/sprayAdvisory';
 import { useTheme } from '../context/ThemeContext';
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend
@@ -242,9 +243,8 @@ export const Weather: React.FC = () => {
   const currentMeta = getWeatherMeta(current?.weather_code, language);
   const CurrentWeatherIcon = currentMeta.icon;
 
-  // Spray advisory
-  const isHighRain = (daily?.precipitation_sum?.[0] || 0) > 2.0;
-  const isHighWind = (current?.wind_speed_10m || 0) > 15;
+  // Transparent, deterministic agronomic spray advisory
+  const sprayAdvisory = computeSprayAdvisory(weather, language as 'en' | 'ta');
 
   return (
     <div className="space-y-6 max-w-full overflow-hidden">
@@ -513,18 +513,61 @@ export const Weather: React.FC = () => {
             </div>
 
             {/* Spray Window Advisory */}
-            <div className="mt-6 border-t border-white/15 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold uppercase tracking-wider text-zinc-400 shrink-0">Spray Advisory:</span>
-                {isHighRain ? (
-                  <span className="text-rose-300 font-semibold">⚠️ Unfavorable (Rain predicted, chemical runoff risk)</span>
-                ) : isHighWind ? (
-                  <span className="text-amber-300 font-semibold">⚠️ Moderate Drift (High wind speed, drift hazard)</span>
-                ) : (
-                  <span className="text-zinc-200 font-semibold">✅ Favorable Spray Window (Low wind & clear canopy)</span>
+            <div className="mt-6 border-t border-white/15 pt-5">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5 backdrop-blur-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                      {language === 'ta' ? 'தெளிப்பு ஆலோசனை:' : 'Spray Advisory:'}
+                    </span>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold border ${sprayAdvisory.badgeColorClass}`}>
+                      {sprayAdvisory.badgeText}
+                    </span>
+                  </div>
+                  <span className="text-zinc-400 text-[11px]">Lat: {lat.toFixed(4)}, Lon: {lon.toFixed(4)}</span>
+                </div>
+
+                <p className="mt-3 text-xs leading-relaxed text-zinc-200 font-medium">
+                  {sprayAdvisory.summary}
+                </p>
+
+                {/* Explicit separation between Current Observations and Forecast Window */}
+                <div className="mt-3.5 grid grid-cols-1 md:grid-cols-2 gap-2.5 text-[11px] pt-3.5 border-t border-white/10">
+                  <div className="bg-black/25 p-3 rounded-xl border border-white/5">
+                    <span className="text-zinc-400 font-bold block mb-1">
+                      {language === 'ta' ? '🔍 சரிபார்க்கப்பட்ட நடப்பு அளவீடு:' : '🔍 Verified Current Observation:'}
+                    </span>
+                    <span className="text-zinc-300 leading-normal block">
+                      {sprayAdvisory.currentObsText}
+                    </span>
+                  </div>
+                  <div className="bg-black/25 p-3 rounded-xl border border-white/5">
+                    <span className="text-zinc-400 font-bold block mb-1">
+                      {language === 'ta' ? '📡 எதிர்கால முன்னறிவிப்பு:' : '📡 Future Forecast Window:'}
+                    </span>
+                    <span className="text-zinc-300 leading-normal block">
+                      {sprayAdvisory.forecastText || (language === 'ta' ? 'குறிப்பிடத்தக்க மழை முன்னறிவிப்பு இல்லை' : 'No adverse rain forecast')}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Specific decision factors */}
+                {sprayAdvisory.reasons.length > 0 && (
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {sprayAdvisory.reasons.map((reason, idx) => (
+                      <span key={idx} className="inline-block bg-white/10 text-zinc-300 text-[10px] px-2 py-0.5 rounded-md border border-white/5">
+                        • {reason}
+                      </span>
+                    ))}
+                  </div>
                 )}
+
+                {/* Rainfast drying window advisory */}
+                <div className="mt-2.5 text-[11px] text-zinc-300/90 flex items-start gap-1.5">
+                  <span className="shrink-0">💡</span>
+                  <span className="italic leading-relaxed">{sprayAdvisory.dryingWindowNotice}</span>
+                </div>
               </div>
-              <span className="text-zinc-400 text-[11px] shrink-0">Lat: {lat.toFixed(4)}, Lon: {lon.toFixed(4)}</span>
             </div>
           </div>
 

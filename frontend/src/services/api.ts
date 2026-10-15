@@ -196,7 +196,7 @@ export const api = {
     } catch (backendError) {
       // Live fallback directly to Open-Meteo when backend is asleep, cold-starting, or unauthenticated
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&timezone=auto&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code&forecast_days=7`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&timezone=auto&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&hourly=precipitation,precipitation_probability,wind_speed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weather_code&forecast_days=7`;
         const resp = await fetch(url);
         if (!resp.ok) throw new Error(`Open-Meteo API returned status ${resp.status}`);
         const data = await resp.json();
