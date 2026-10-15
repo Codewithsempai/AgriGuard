@@ -96,16 +96,16 @@ export const Dashboard: React.FC = () => {
 
       {/* Overdue Alert Banner */}
       {stats && stats.tasks_overdue > 0 && (
-        <div className="flex items-center justify-between rounded-2xl bg-zinc-900 text-white border border-zinc-800 dark:bg-zinc-900/80 dark:border-white/15 p-4 shadow-lg backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl bg-zinc-900 text-white border border-zinc-800 dark:bg-zinc-900/80 dark:border-white/15 p-4 shadow-lg backdrop-blur-md">
+          <div className="flex items-start sm:items-center gap-3 min-w-0">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0 mt-0.5 sm:mt-0">
               <AlertTriangle className="h-5 w-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-sm font-bold text-white">
                 {stats.tasks_overdue} {language === 'ta' ? 'பண்ணை பணிகள் காலக்கெடு முடிந்துள்ளன!' : 'Scheduled farm activities are overdue!'}
               </p>
-              <p className="text-xs text-zinc-300">
+              <p className="text-xs text-zinc-300 mt-0.5">
                 {language === 'ta'
                   ? 'பயிர் இழப்புகளைத் தவிர்க்க உடனடியாக காலண்டர் பக்கத்தில் பணிகளை கவனிக்கவும்.'
                   : 'Review your calendar to address overdue irrigation, fertilization, or pesticide tasks.'}
@@ -114,7 +114,7 @@ export const Dashboard: React.FC = () => {
           </div>
           <Link
             to="/calendar"
-            className="inline-flex items-center gap-1 rounded-xl bg-white px-3.5 py-1.5 text-xs font-bold text-black shadow-sm hover:bg-zinc-200 transition shrink-0"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-white px-3.5 py-2 text-xs font-bold text-black shadow-sm hover:bg-zinc-200 transition shrink-0 self-start sm:self-auto"
           >
             <span>{language === 'ta' ? 'பார்க்க' : 'View Tasks'}</span>
             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -172,9 +172,9 @@ export const Dashboard: React.FC = () => {
             </Link>
           </div>
 
-          <div className="h-64 w-full">
+          <div className="chart-wrapper h-64 w-full min-w-0 overflow-hidden">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+              <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'} />
                 <XAxis dataKey="name" tick={{ fontSize: 12, fill: theme === 'dark' ? '#a1a1aa' : '#71717a' }} />
                 <YAxis tick={{ fontSize: 12, fill: theme === 'dark' ? '#a1a1aa' : '#71717a' }} />
@@ -294,11 +294,11 @@ export const Dashboard: React.FC = () => {
           {stats?.recent_tasks && stats.recent_tasks.length > 0 ? (
             <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {stats.recent_tasks.map((task: Task) => (
-                <div key={task.id} className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3">
+                <div key={task.id} className="flex items-center justify-between gap-3 py-3 min-w-0">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <button
                       onClick={() => handleToggleTask(task.id)}
-                      className={`h-5 w-5 rounded-md flex items-center justify-center border transition ${
+                      className={`h-5 w-5 rounded-md flex items-center justify-center border transition shrink-0 ${
                         task.completed
                           ? 'bg-black border-black text-white dark:bg-white dark:border-white dark:text-black'
                           : 'border-zinc-300 hover:border-black dark:border-white/20 dark:hover:border-white text-transparent'
@@ -306,12 +306,12 @@ export const Dashboard: React.FC = () => {
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" />
                     </button>
-                    <div>
-                      <p className={`text-sm font-medium ${task.completed ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200'}`}>
+                    <div className="min-w-0 flex-1">
+                      <p className={`text-sm font-medium truncate ${task.completed ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200'}`}>
                         {task.title}
                       </p>
-                      <span className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
-                        <Clock className="h-3 w-3" />
+                      <span className="text-[11px] text-slate-400 flex flex-wrap items-center gap-1 mt-0.5">
+                        <Clock className="h-3 w-3 shrink-0" />
                         <span>Due {task.due_date}</span>
                         <span className="capitalize px-1.5 py-0.2 rounded-sm bg-zinc-100 dark:bg-white/10 text-[10px] text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-white/10">
                           {task.task_type.replace('_', ' ')}
@@ -319,7 +319,7 @@ export const Dashboard: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
                     task.completed
                       ? 'bg-zinc-100 text-zinc-900 border-zinc-300 dark:bg-white/10 dark:text-white dark:border-white/20'
                       : 'bg-zinc-900 text-white border-zinc-800 dark:bg-white dark:text-black dark:border-white'
@@ -352,26 +352,26 @@ export const Dashboard: React.FC = () => {
           {stats?.recent_disease && stats.recent_disease.length > 0 ? (
             <div className="divide-y divide-zinc-100 dark:divide-white/5">
               {stats.recent_disease.map((diag) => (
-                <div key={diag.id} className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3">
+                <div key={diag.id} className="flex items-center justify-between gap-3 py-3 min-w-0">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <img
                       src={diag.image_url}
                       alt="Crop leaf"
-                      className="h-10 w-10 rounded-lg object-cover border border-zinc-200 dark:border-white/15"
+                      className="h-10 w-10 rounded-lg object-cover border border-zinc-200 dark:border-white/15 shrink-0"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = 'none';
                       }}
                     />
-                    <div>
-                      <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
                         {diag.predicted_label ? diag.predicted_label.replace('___', ' - ').replace(/_/g, ' ') : 'Demo analysis'}
                       </p>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[11px] text-slate-400 truncate">
                         {diag.created_at?.slice(0, 10)} • {diag.mode === 'model' ? `${((diag.confidence || 0) * 100).toFixed(1)}% confidence` : 'Demo mode'}
                       </p>
                     </div>
                   </div>
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
                     diag.mode === 'model'
                       ? 'bg-zinc-900 text-white border-zinc-800 dark:bg-white dark:text-black dark:border-white'
                       : 'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-white/10 dark:text-zinc-300 dark:border-white/10'

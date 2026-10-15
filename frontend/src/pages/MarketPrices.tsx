@@ -145,67 +145,69 @@ export const MarketPrices: React.FC = () => {
       {loading ? (
         <LoadingSkeleton count={4} height="h-16" />
       ) : prices.length > 0 ? (
-        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900 glass-card">
-          <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-            <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800">
-              <tr>
-                <th className="p-4">Crop</th>
-                <th className="p-4">Market / Mandi</th>
-                <th className="p-4">Benchmark Price</th>
-                <th className="p-4">Recorded Date</th>
-                <th className="p-4">Source & Authenticity</th>
-                {isAdmin && <th className="p-4 text-right">Action</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {prices.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition">
-                  <td className="p-4 font-bold text-slate-900 dark:text-white text-sm">
-                    {item.crop}
-                  </td>
-                  <td className="p-4 font-medium text-slate-700 dark:text-slate-200">
-                    {item.market}
-                  </td>
-                  <td className="p-4">
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
-                      ₹{item.price.toLocaleString()}
-                    </span>
-                    <span className="text-[11px] text-slate-400 ml-1">/ {item.unit}</span>
-                  </td>
-                  <td className="p-4 text-slate-500">
-                    {item.recorded_on}
-                  </td>
-                  <td className="p-4 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-slate-600 dark:text-slate-400 font-medium">
-                        {item.source}
-                      </span>
-                      {item.is_sample ? (
-                        <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                          Sample Benchmark
-                        </span>
-                      ) : (
-                        <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                          Verified
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  {isAdmin && (
-                    <td className="p-4 text-right">
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
-                        title="Delete price entry"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </td>
-                  )}
+        <div className="rounded-2xl border border-zinc-200/80 bg-white shadow-xs dark:border-white/10 dark:bg-zinc-900 glass-card overflow-hidden">
+          <div className="table-responsive-container w-full min-w-0 overflow-x-auto">
+            <table className="w-full text-left text-xs text-zinc-600 dark:text-zinc-300 min-w-[640px]">
+              <thead className="bg-zinc-50 text-[11px] uppercase tracking-wider text-zinc-500 dark:bg-white/5 border-b border-zinc-200/80 dark:border-white/10">
+                <tr>
+                  <th className="p-4">Crop</th>
+                  <th className="p-4">Market / Mandi</th>
+                  <th className="p-4">Benchmark Price</th>
+                  <th className="p-4">Recorded Date</th>
+                  <th className="p-4">Source & Authenticity</th>
+                  {isAdmin && <th className="p-4 text-right">Action</th>}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-white/5">
+                {prices.map((item) => (
+                  <tr key={item.id} className="hover:bg-zinc-50/50 dark:hover:bg-white/[0.02] transition">
+                    <td className="p-4 font-bold text-slate-900 dark:text-white text-sm">
+                      {item.crop}
+                    </td>
+                    <td className="p-4 font-medium text-slate-700 dark:text-slate-200">
+                      {item.market}
+                    </td>
+                    <td className="p-4">
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
+                        ₹{item.price.toLocaleString()}
+                      </span>
+                      <span className="text-[11px] text-slate-400 ml-1">/ {item.unit}</span>
+                    </td>
+                    <td className="p-4 text-slate-500">
+                      {item.recorded_on}
+                    </td>
+                    <td className="p-4 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-600 dark:text-slate-400 font-medium">
+                          {item.source}
+                        </span>
+                        {item.is_sample ? (
+                          <span className="rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                            Sample Benchmark
+                          </span>
+                        ) : (
+                          <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                            Verified
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    {isAdmin && (
+                      <td className="p-4 text-right">
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
+                          title="Delete price entry"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
         <EmptyState

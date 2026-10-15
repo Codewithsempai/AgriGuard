@@ -340,12 +340,12 @@ export const DiseaseDetection: React.FC = () => {
       {/* Diagnosis Results Section */}
       {result && (
         <div className="rounded-3xl border border-zinc-200/80 bg-white/80 p-6 sm:p-8 shadow-xl dark:border-white/15 dark:bg-zinc-900/80 glass-card backdrop-blur-xl space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/80 dark:border-white/10 pb-4">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-white/10 border border-zinc-200 dark:border-white/15 px-2.5 py-0.5 rounded-md">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/80 dark:border-white/10 pb-4 min-w-0">
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-white/10 border border-zinc-200 dark:border-white/15 px-2.5 py-0.5 rounded-md inline-block">
                 {result.top_prediction?.engine || (result.mode === 'model' ? 'TensorFlow Inference Complete' : 'AI Diagnosis Complete')}
               </span>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1.5">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1.5 break-words">
                 {result.top_prediction
                   ? (language === 'ta' && result.top_prediction.details?.tamil_name
                       ? result.top_prediction.details.tamil_name
@@ -355,7 +355,7 @@ export const DiseaseDetection: React.FC = () => {
             </div>
 
             {result.top_prediction && (
-              <div className="flex items-center gap-3 bg-zinc-100 dark:bg-white/10 border border-zinc-200 dark:border-white/15 px-4 py-2 rounded-2xl shadow-xs">
+              <div className="flex items-center gap-3 bg-zinc-100 dark:bg-white/10 border border-zinc-200 dark:border-white/15 px-4 py-2 rounded-2xl shadow-xs shrink-0 self-start sm:self-auto">
                 <Activity className="h-5 w-5 text-zinc-900 dark:text-white" />
                 <div>
                   <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold">

@@ -129,9 +129,9 @@ export const Reports: React.FC = () => {
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
             Comparison of production cost vs sales revenue for each planted crop variety
           </p>
-          <div className="h-72 w-full">
+          <div className="chart-wrapper h-72 w-full min-w-0 overflow-hidden">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+              <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
@@ -147,51 +147,53 @@ export const Reports: React.FC = () => {
       )}
 
       {/* Crop Ledger Table */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900 glass-card">
-        <div className="p-5 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">
+      <div className="rounded-2xl border border-zinc-200/80 bg-white shadow-xs dark:border-white/10 dark:bg-zinc-900 glass-card overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-zinc-200/80 dark:border-white/10">
+          <h3 className="text-base font-bold text-zinc-900 dark:text-white">
             Crop Financial Ledger Breakdown
           </h3>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-zinc-500">
             Computed from recorded individual transactions in SQLite
           </p>
         </div>
 
         {report?.crops && report.crops.length > 0 ? (
-          <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-            <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800">
-              <tr>
-                <th className="p-4">Crop Name</th>
-                <th className="p-4">Lifecycle Status</th>
-                <th className="p-4">Cultivation Cost</th>
-                <th className="p-4">Harvest Revenue</th>
-                <th className="p-4">Net Margin</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {report.crops.map((c, i) => (
-                <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition">
-                  <td className="p-4 font-bold text-slate-900 dark:text-white text-sm">
-                    {c.crop}
-                  </td>
-                  <td className="p-4">
-                    <span className="capitalize font-semibold rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-slate-700 dark:text-slate-300 text-[10px]">
-                      {c.status}
-                    </span>
-                  </td>
-                  <td className="p-4 font-semibold text-rose-600 dark:text-rose-400">
-                    ₹{c.cost.toLocaleString()}
-                  </td>
-                  <td className="p-4 font-semibold text-emerald-600 dark:text-emerald-400">
-                    ₹{c.revenue.toLocaleString()}
-                  </td>
-                  <td className={`p-4 font-bold text-sm ${c.profit >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-600'}`}>
-                    ₹{c.profit.toLocaleString()}
-                  </td>
+          <div className="table-responsive-container w-full min-w-0 overflow-x-auto">
+            <table className="w-full text-left text-xs text-zinc-600 dark:text-zinc-300 min-w-[560px]">
+              <thead className="bg-zinc-50 text-[11px] uppercase tracking-wider text-zinc-500 dark:bg-white/5 border-b border-zinc-200/80 dark:border-white/10">
+                <tr>
+                  <th className="p-4">Crop Name</th>
+                  <th className="p-4">Lifecycle Status</th>
+                  <th className="p-4">Cultivation Cost</th>
+                  <th className="p-4">Harvest Revenue</th>
+                  <th className="p-4">Net Margin</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-white/5">
+                {report.crops.map((c, i) => (
+                  <tr key={i} className="hover:bg-zinc-50/50 dark:hover:bg-white/[0.02] transition">
+                    <td className="p-4 font-bold text-slate-900 dark:text-white text-sm">
+                      {c.crop}
+                    </td>
+                    <td className="p-4">
+                      <span className="capitalize font-semibold rounded-md bg-zinc-100 dark:bg-white/10 px-2 py-0.5 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-white/10 text-[10px]">
+                        {c.status}
+                      </span>
+                    </td>
+                    <td className="p-4 font-semibold text-rose-600 dark:text-rose-400">
+                      ₹{c.cost.toLocaleString()}
+                    </td>
+                    <td className="p-4 font-semibold text-emerald-600 dark:text-emerald-400">
+                      ₹{c.revenue.toLocaleString()}
+                    </td>
+                    <td className={`p-4 font-bold text-sm ${c.profit >= 0 ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-600'}`}>
+                      ₹{c.profit.toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <div className="p-8 text-center text-xs text-slate-400">
             No crops logged yet to generate economic reports.

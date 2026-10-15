@@ -30,7 +30,7 @@ export const Settings: React.FC = () => {
             Toggle between clean pearl-white glass light theme and deep obsidian glass dark theme
           </p>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <button
               onClick={() => setTheme('light')}
               className={`flex items-center gap-3 rounded-2xl border p-4 text-left transition cursor-pointer ${
@@ -80,7 +80,7 @@ export const Settings: React.FC = () => {
             Choose your preferred regional interface language
           </p>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <button
               onClick={() => setLanguage('en')}
               className={`flex items-center justify-between rounded-2xl border p-4 text-left transition cursor-pointer ${

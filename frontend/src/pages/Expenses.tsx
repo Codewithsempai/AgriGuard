@@ -185,7 +185,7 @@ export const Expenses: React.FC = () => {
             Expense distribution across farming inputs
           </p>
           {pieData.length > 0 ? (
-            <div className="h-52 w-full">
+            <div className="chart-wrapper h-52 w-full min-w-0 overflow-hidden">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -245,65 +245,67 @@ export const Expenses: React.FC = () => {
       {loading ? (
         <LoadingSkeleton count={4} height="h-16" />
       ) : filteredExpenses.length > 0 ? (
-        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900 glass-card">
-          <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-            <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800">
-              <tr>
-                <th className="p-4">Date</th>
-                <th className="p-4">Category</th>
-                <th className="p-4">Linked Crop</th>
-                <th className="p-4">Amount</th>
-                <th className="p-4">Notes</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {filteredExpenses.map((exp) => {
-                const crop = crops.find((c) => c.id === exp.crop_id);
-                return (
-                  <tr key={exp.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition">
-                    <td className="p-4 font-medium text-slate-900 dark:text-white">
-                      {exp.spent_on}
-                    </td>
-                    <td className="p-4">
-                      <span className="capitalize font-semibold rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-slate-700 dark:text-slate-300">
-                        {exp.category}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      {crop ? (
-                        <span className="text-zinc-800 dark:text-zinc-200 font-semibold">{crop.name}</span>
-                      ) : (
-                        <span className="text-slate-400">General Farm</span>
-                      )}
-                    </td>
-                    <td className="p-4 font-bold text-rose-600 dark:text-rose-400 text-sm">
-                      ₹{exp.amount.toLocaleString()}
-                    </td>
-                    <td className="p-4 text-slate-500 max-w-xs truncate">
-                      {exp.note || '--'}
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => openEditModal(exp)}
-                          className="rounded-lg p-1.5 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(exp.id)}
-                          className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="rounded-2xl border border-zinc-200/80 bg-white shadow-xs dark:border-white/10 dark:bg-zinc-900 glass-card overflow-hidden">
+          <div className="table-responsive-container w-full min-w-0 overflow-x-auto">
+            <table className="w-full text-left text-xs text-zinc-600 dark:text-zinc-300 min-w-[620px]">
+              <thead className="bg-zinc-50 text-[11px] uppercase tracking-wider text-zinc-500 dark:bg-white/5 border-b border-zinc-200/80 dark:border-white/10">
+                <tr>
+                  <th className="p-4">Date</th>
+                  <th className="p-4">Category</th>
+                  <th className="p-4">Linked Crop</th>
+                  <th className="p-4">Amount</th>
+                  <th className="p-4">Notes</th>
+                  <th className="p-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-white/5">
+                {filteredExpenses.map((exp) => {
+                  const crop = crops.find((c) => c.id === exp.crop_id);
+                  return (
+                    <tr key={exp.id} className="hover:bg-zinc-50/50 dark:hover:bg-white/[0.02] transition">
+                      <td className="p-4 font-medium text-slate-900 dark:text-white">
+                        {exp.spent_on}
+                      </td>
+                      <td className="p-4">
+                        <span className="capitalize font-semibold rounded-md bg-zinc-100 dark:bg-white/10 px-2 py-0.5 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-white/10">
+                          {exp.category}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        {crop ? (
+                          <span className="text-zinc-800 dark:text-zinc-200 font-semibold">{crop.name}</span>
+                        ) : (
+                          <span className="text-slate-400">General Farm</span>
+                        )}
+                      </td>
+                      <td className="p-4 font-bold text-rose-600 dark:text-rose-400 text-sm">
+                        ₹{exp.amount.toLocaleString()}
+                      </td>
+                      <td className="p-4 text-slate-500 max-w-xs truncate">
+                        {exp.note || '--'}
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => openEditModal(exp)}
+                            className="rounded-lg p-1.5 text-slate-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-white/10 cursor-pointer"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(exp.id)}
+                            className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
         <EmptyState

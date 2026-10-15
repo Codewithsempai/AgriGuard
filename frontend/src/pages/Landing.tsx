@@ -72,7 +72,7 @@ export const Landing: React.FC = () => {
           <span>{language === 'ta' ? 'செயற்கை நுண்ணறிவுடன் கூடிய ஸ்மார்ட் விவசாயம்' : 'Enterprise Autonomous Agriculture SaaS'}</span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-tight sm:leading-none">
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-4xl mx-auto leading-tight sm:leading-none">
           {language === 'ta' ? (
             <>விவசாயத்தை மேம்படுத்தும் <span className="text-black dark:text-white underline decoration-zinc-400 dark:decoration-zinc-600 underline-offset-8">அறிவார்ந்த AI தளம்</span></>
           ) : (

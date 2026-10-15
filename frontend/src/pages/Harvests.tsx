@@ -163,60 +163,62 @@ export const Harvests: React.FC = () => {
       {loading ? (
         <LoadingSkeleton count={4} height="h-16" />
       ) : harvests.length > 0 ? (
-        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900 glass-card">
-          <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-            <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800">
-              <tr>
-                <th className="p-4">Harvest Date</th>
-                <th className="p-4">Crop</th>
-                <th className="p-4">Quantity (kg)</th>
-                <th className="p-4">Selling Rate</th>
-                <th className="p-4">Total Revenue</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {harvests.map((h) => {
-                const crop = crops.find((c) => c.id === h.crop_id);
-                const revenue = h.quantity_kg * h.price_per_kg;
-                return (
-                  <tr key={h.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition">
-                    <td className="p-4 font-medium text-slate-900 dark:text-white">
-                      {h.harvested_on}
-                    </td>
-                    <td className="p-4 font-semibold text-emerald-700 dark:text-emerald-400 text-sm">
-                      {crop ? crop.name : `Crop #${h.crop_id}`}
-                    </td>
-                    <td className="p-4 font-bold text-slate-800 dark:text-slate-200">
-                      {h.quantity_kg.toLocaleString()} kg
-                    </td>
-                    <td className="p-4">
-                      ₹{h.price_per_kg} / kg
-                    </td>
-                    <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400 text-sm">
-                      ₹{revenue.toLocaleString()}
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => openEditModal(h)}
-                          className="rounded-lg p-1.5 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(h.id)}
-                          className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="rounded-2xl border border-zinc-200/80 bg-white shadow-xs dark:border-white/10 dark:bg-zinc-900 glass-card overflow-hidden">
+          <div className="table-responsive-container w-full min-w-0 overflow-x-auto">
+            <table className="w-full text-left text-xs text-zinc-600 dark:text-zinc-300 min-w-[600px]">
+              <thead className="bg-zinc-50 text-[11px] uppercase tracking-wider text-zinc-500 dark:bg-white/5 border-b border-zinc-200/80 dark:border-white/10">
+                <tr>
+                  <th className="p-4">Harvest Date</th>
+                  <th className="p-4">Crop</th>
+                  <th className="p-4">Quantity (kg)</th>
+                  <th className="p-4">Selling Rate</th>
+                  <th className="p-4">Total Revenue</th>
+                  <th className="p-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-white/5">
+                {harvests.map((h) => {
+                  const crop = crops.find((c) => c.id === h.crop_id);
+                  const revenue = h.quantity_kg * h.price_per_kg;
+                  return (
+                    <tr key={h.id} className="hover:bg-zinc-50/50 dark:hover:bg-white/[0.02] transition">
+                      <td className="p-4 font-medium text-slate-900 dark:text-white">
+                        {h.harvested_on}
+                      </td>
+                      <td className="p-4 font-semibold text-zinc-900 dark:text-white text-sm">
+                        {crop ? crop.name : `Crop #${h.crop_id}`}
+                      </td>
+                      <td className="p-4 font-bold text-slate-800 dark:text-slate-200">
+                        {h.quantity_kg.toLocaleString()} kg
+                      </td>
+                      <td className="p-4">
+                        ₹{h.price_per_kg} / kg
+                      </td>
+                      <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400 text-sm">
+                        ₹{revenue.toLocaleString()}
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => openEditModal(h)}
+                            className="rounded-lg p-1.5 text-slate-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-white/10 cursor-pointer"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(h.id)}
+                            className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
         <EmptyState

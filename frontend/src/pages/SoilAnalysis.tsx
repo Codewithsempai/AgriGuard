@@ -307,9 +307,9 @@ export const SoilAnalysis: React.FC = () => {
         {historyLoading ? (
           <LoadingSkeleton count={3} height="h-16" />
         ) : history.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-              <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 dark:bg-slate-800/60">
+          <div className="table-responsive-container w-full min-w-0 overflow-x-auto">
+            <table className="w-full text-left text-xs text-zinc-600 dark:text-zinc-300 min-w-[500px]">
+              <thead className="bg-zinc-50 text-[11px] uppercase tracking-wider text-zinc-500 dark:bg-white/5 border-b border-zinc-200/80 dark:border-white/10">
                 <tr>
                   <th className="p-3">Date</th>
                   <th className="p-3">Crop / Field</th>
@@ -319,9 +319,9 @@ export const SoilAnalysis: React.FC = () => {
                   <th className="p-3">K (kg/ha)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-zinc-100 dark:divide-white/5">
                 {history.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                  <tr key={item.id} className="hover:bg-zinc-50/50 dark:hover:bg-white/[0.02]">
                     <td className="p-3 font-medium text-slate-900 dark:text-white">{item.tested_on}</td>
                     <td className="p-3 capitalize">{item.crop_name || 'General'}</td>
                     <td className="p-3 font-semibold">{item.ph}</td>

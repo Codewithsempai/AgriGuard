@@ -438,29 +438,29 @@ export const Weather: React.FC = () => {
               </div>
 
               {/* 3 Metric Pills */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-3 bg-white/10 dark:bg-white/5 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-white/10">
-                <div className="text-center">
-                  <Droplets className="h-5 w-5 mx-auto text-zinc-300 mb-1" />
-                  <span className="text-[10px] text-zinc-400 uppercase block">Humidity</span>
-                  <span className="text-sm sm:text-base font-bold text-white">{current?.relative_humidity_2m ?? '--'}%</span>
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-3 bg-white/10 dark:bg-white/5 backdrop-blur-md p-2.5 sm:p-4 rounded-2xl border border-white/10 min-w-0">
+                <div className="text-center min-w-0">
+                  <Droplets className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-zinc-300 mb-1" />
+                  <span className="text-[9px] sm:text-[10px] text-zinc-400 uppercase block truncate">Humidity</span>
+                  <span className="text-xs sm:text-base font-bold text-white truncate block">{current?.relative_humidity_2m ?? '--'}%</span>
                 </div>
-                <div className="text-center">
-                  <CloudRain className="h-5 w-5 mx-auto text-zinc-300 mb-1" />
-                  <span className="text-[10px] text-zinc-400 uppercase block">Rainfall</span>
-                  <span className="text-sm sm:text-base font-bold text-white">{current?.precipitation ?? 0} mm</span>
+                <div className="text-center min-w-0">
+                  <CloudRain className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-zinc-300 mb-1" />
+                  <span className="text-[9px] sm:text-[10px] text-zinc-400 uppercase block truncate">Rainfall</span>
+                  <span className="text-xs sm:text-base font-bold text-white truncate block">{current?.precipitation ?? 0} mm</span>
                 </div>
-                <div className="text-center">
-                  <Wind className="h-5 w-5 mx-auto text-zinc-300 mb-1" />
-                  <span className="text-[10px] text-zinc-400 uppercase block">Wind</span>
-                  <span className="text-sm sm:text-base font-bold text-white">{current?.wind_speed_10m ?? 0} km/h</span>
+                <div className="text-center min-w-0">
+                  <Wind className="h-4 w-4 sm:h-5 sm:w-5 mx-auto text-zinc-300 mb-1" />
+                  <span className="text-[9px] sm:text-[10px] text-zinc-400 uppercase block truncate">Wind</span>
+                  <span className="text-xs sm:text-base font-bold text-white truncate block">{current?.wind_speed_10m ?? 0} km/h</span>
                 </div>
               </div>
             </div>
 
             {/* Spray Window Advisory */}
             <div className="mt-6 border-t border-white/15 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-              <div className="flex items-center gap-2">
-                <span className="font-bold uppercase tracking-wider text-zinc-400">Spray Advisory:</span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold uppercase tracking-wider text-zinc-400 shrink-0">Spray Advisory:</span>
                 {isHighRain ? (
                   <span className="text-rose-300 font-semibold">⚠️ Unfavorable (Rain predicted, chemical runoff risk)</span>
                 ) : isHighWind ? (
@@ -469,23 +469,23 @@ export const Weather: React.FC = () => {
                   <span className="text-zinc-200 font-semibold">✅ Favorable Spray Window (Low wind & clear canopy)</span>
                 )}
               </div>
-              <span className="text-zinc-400 text-[11px]">Lat: {lat.toFixed(4)}, Lon: {lon.toFixed(4)}</span>
+              <span className="text-zinc-400 text-[11px] shrink-0">Lat: {lat.toFixed(4)}, Lon: {lon.toFixed(4)}</span>
             </div>
           </div>
 
           {/* 7-Day Charts Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
             {/* Temperature Trends */}
-            <div className="rounded-3xl border border-zinc-200/80 bg-white/90 p-5 sm:p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900/60 backdrop-blur-xl">
+            <div className="rounded-3xl border border-zinc-200/80 bg-white/90 p-4 sm:p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900/60 backdrop-blur-xl min-w-0">
               <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
                 {language === 'ta' ? '7 நாள் வெப்பநிலை போக்கு (°C)' : '7-Day Temperature Range (°C)'}
               </h3>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
                 Maximum daytime vs minimum night-time temperatures
               </p>
-              <div className="h-64 w-full">
+              <div className="chart-wrapper h-64 w-full min-w-0 overflow-hidden">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={forecastChartData}>
+                  <LineChart data={forecastChartData} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#27272a' : '#e4e4e7'} opacity={0.7} />
                     <XAxis dataKey="date" tick={{ fontSize: 11, fill: isDark ? '#a1a1aa' : '#71717a' }} />
                     <YAxis tick={{ fontSize: 11, fill: isDark ? '#a1a1aa' : '#71717a' }} domain={['dataMin - 2', 'dataMax + 2']} />
@@ -507,16 +507,16 @@ export const Weather: React.FC = () => {
             </div>
 
             {/* Precipitation Trends */}
-            <div className="rounded-3xl border border-zinc-200/80 bg-white/90 p-5 sm:p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900/60 backdrop-blur-xl">
+            <div className="rounded-3xl border border-zinc-200/80 bg-white/90 p-4 sm:p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900/60 backdrop-blur-xl min-w-0">
               <h3 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">
                 {language === 'ta' ? 'எதிர்பார்க்கப்படும் மழைப்பொழிவு (மி.மீ)' : 'Daily Precipitation Sum (mm)'}
               </h3>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
                 Quantitative precipitation forecast for irrigation regulation
               </p>
-              <div className="h-64 w-full">
+              <div className="chart-wrapper h-64 w-full min-w-0 overflow-hidden">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={forecastChartData}>
+                  <BarChart data={forecastChartData} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#27272a' : '#e4e4e7'} opacity={0.7} />
                     <XAxis dataKey="date" tick={{ fontSize: 11, fill: isDark ? '#a1a1aa' : '#71717a' }} />
                     <YAxis tick={{ fontSize: 11, fill: isDark ? '#a1a1aa' : '#71717a' }} />

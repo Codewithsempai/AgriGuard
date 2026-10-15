@@ -111,21 +111,21 @@ export const Login: React.FC = () => {
             <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 text-center mb-2">
               Quick Demo Fill
             </p>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               <button
                 type="button"
                 onClick={() => handleQuickLogin('demo@farm.com', 'password123')}
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 py-1.5 px-2 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300"
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 py-2 px-2 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300 cursor-pointer"
               >
-                <UserCheck className="h-3.5 w-3.5 text-emerald-600" />
+                <UserCheck className="h-3.5 w-3.5 text-zinc-900 dark:text-white" />
                 <span>Farmer Demo</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickLogin('admin@agriguard.com', 'admin12345')}
-                className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 py-1.5 px-2 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300"
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 py-2 px-2 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300 cursor-pointer"
               >
-                <UserCheck className="h-3.5 w-3.5 text-amber-600" />
+                <UserCheck className="h-3.5 w-3.5 text-zinc-900 dark:text-white" />
                 <span>Admin Demo</span>
               </button>
             </div>

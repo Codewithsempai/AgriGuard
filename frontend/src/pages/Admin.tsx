@@ -114,12 +114,12 @@ export const Admin: React.FC = () => {
       </div>
 
       {/* Users Management Table */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900 glass-card">
-        <div className="p-5 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">
+      <div className="rounded-2xl border border-zinc-200/80 bg-white shadow-xs dark:border-white/10 dark:bg-zinc-900 glass-card overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-zinc-200/80 dark:border-white/10">
+          <h3 className="text-base font-bold text-zinc-900 dark:text-white">
             User Accounts & Roles Registry
           </h3>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-zinc-500">
             Registered farmers and administrative accounts stored in SQLite
           </p>
         </div>
@@ -129,49 +129,51 @@ export const Admin: React.FC = () => {
             <LoadingSkeleton count={3} height="h-14" />
           </div>
         ) : users.length > 0 ? (
-          <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-            <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800">
-              <tr>
-                <th className="p-4">ID</th>
-                <th className="p-4">Farmer / User Name</th>
-                <th className="p-4">Email Address</th>
-                <th className="p-4">Assigned Role</th>
-                <th className="p-4">Language</th>
-                <th className="p-4">Registered Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {users.map((u) => (
-                <tr key={u.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition">
-                  <td className="p-4 font-mono font-bold text-slate-400">
-                    #{u.id}
-                  </td>
-                  <td className="p-4 font-bold text-slate-900 dark:text-white text-sm">
-                    {u.name}
-                  </td>
-                  <td className="p-4 font-mono">
-                    {u.email}
-                  </td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold capitalize ${
-                      u.role === 'admin'
-                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
-                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                    }`}>
-                      {u.role === 'admin' && <ShieldCheck className="h-3 w-3" />}
-                      <span>{u.role}</span>
-                    </span>
-                  </td>
-                  <td className="p-4 uppercase font-semibold">
-                    {u.language || 'en'}
-                  </td>
-                  <td className="p-4 text-slate-400">
-                    {u.created_at?.slice(0, 10) || 'Active'}
-                  </td>
+          <div className="table-responsive-container w-full min-w-0 overflow-x-auto">
+            <table className="w-full text-left text-xs text-zinc-600 dark:text-zinc-300 min-w-[650px]">
+              <thead className="bg-zinc-50 text-[11px] uppercase tracking-wider text-zinc-500 dark:bg-white/5 border-b border-zinc-200/80 dark:border-white/10">
+                <tr>
+                  <th className="p-4">ID</th>
+                  <th className="p-4">Farmer / User Name</th>
+                  <th className="p-4">Email Address</th>
+                  <th className="p-4">Assigned Role</th>
+                  <th className="p-4">Language</th>
+                  <th className="p-4">Registered Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-white/5">
+                {users.map((u) => (
+                  <tr key={u.id} className="hover:bg-zinc-50/50 dark:hover:bg-white/[0.02] transition">
+                    <td className="p-4 font-mono font-bold text-slate-400">
+                      #{u.id}
+                    </td>
+                    <td className="p-4 font-bold text-slate-900 dark:text-white text-sm">
+                      {u.name}
+                    </td>
+                    <td className="p-4 font-mono">
+                      {u.email}
+                    </td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold capitalize ${
+                        u.role === 'admin'
+                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                          : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                      }`}>
+                        {u.role === 'admin' && <ShieldCheck className="h-3 w-3" />}
+                        <span>{u.role}</span>
+                      </span>
+                    </td>
+                    <td className="p-4 uppercase font-semibold">
+                      {u.language || 'en'}
+                    </td>
+                    <td className="p-4 text-slate-400">
+                      {u.created_at?.slice(0, 10) || 'Active'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <div className="p-8 text-center text-xs text-slate-400">
             No user accounts found.
