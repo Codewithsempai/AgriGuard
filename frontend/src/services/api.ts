@@ -189,8 +189,27 @@ export const api = {
     apiClient.get<SoilHistoryItem[]>('/soil/history').then(r => r.data),
 
   // Weather
-  getWeather: (lat: number, lon: number) =>
-    apiClient.get<WeatherData>('/weather/forecast', { params: { lat, lon } }).then(r => r.data),
+  getWeather: async (lat: number, lon: number): Promise<WeatherData> => {
+    try {
+      const res = await apiClient.get<WeatherData>('/weather/forecast', { params: { lat, lon } });
+      return res.data;
+    } catch (backendError) {
+      // Live fallback directly to Open-Meteo when backend is asleep, cold-starting, or unauthenticated
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&timezone=auto&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code&forecast_days=7`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`Open-Meteo API returned status ${resp.status}`);
+        const data = await resp.json();
+        return {
+          source: 'Open-Meteo (open-meteo.com)',
+          fetched_at: new Date().toISOString(),
+          data,
+        };
+      } catch {
+        throw backendError;
+      }
+    }
+  },
 
   // Market Prices
   getMarketPrices: (params?: { crop?: string; market?: string; on?: string }) =>

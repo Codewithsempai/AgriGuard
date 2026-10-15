@@ -215,6 +215,7 @@ export interface WeatherData {
   fetched_at: string;
   data: {
     current?: {
+      time?: string;
       temperature_2m: number;
       relative_humidity_2m: number;
       precipitation: number;

@@ -33,6 +33,46 @@ const PRESET_LOCATIONS = [
   { name: 'Delhi NCR', lat: 28.6139, lon: 77.2090, tag: 'North' },
 ];
 
+const getWeatherMeta = (code: number | undefined, lang: string) => {
+  if (code === undefined) return { label: lang === 'ta' ? 'வானிலை தகவல்' : 'Weather Data', icon: CloudSun };
+  if (code === 0) return { label: lang === 'ta' ? 'தெளிவான வானம்' : 'Clear Sky', icon: Sun };
+  if (code === 1 || code === 2) return { label: lang === 'ta' ? 'பகுதி மேகமூட்டம்' : 'Partly Cloudy', icon: CloudSun };
+  if (code === 3) return { label: lang === 'ta' ? 'முழு மேகமூட்டம்' : 'Overcast', icon: Cloud };
+  if (code === 45 || code === 48) return { label: lang === 'ta' ? 'மூடுபனி' : 'Foggy', icon: Cloud };
+  if (code >= 51 && code <= 57) return { label: lang === 'ta' ? 'தூறல் மழை' : 'Drizzle', icon: Droplets };
+  if (code >= 61 && code <= 67) return { label: lang === 'ta' ? 'மழைப்பொழிவு' : 'Rain', icon: CloudRain };
+  if (code >= 71 && code <= 77) return { label: lang === 'ta' ? 'பனிப்பொழிவு' : 'Snowfall', icon: Cloud };
+  if (code >= 80 && code <= 82) return { label: lang === 'ta' ? 'கனமழை' : 'Showers', icon: CloudRain };
+  if (code >= 95) return { label: lang === 'ta' ? 'இடி மின்னல் மழை' : 'Thunderstorm', icon: AlertTriangle };
+  return { label: lang === 'ta' ? 'வானிலை மாற்றம்' : 'Variable', icon: CloudSun };
+};
+
+const getDayAdvisory = (rain: number, maxTemp: number, code: number, lang: string) => {
+  if (code >= 95) {
+    return lang === 'ta'
+      ? 'இடி மின்னல் எச்சரிக்கை - தெளிப்பை தவிர்க்கவும்'
+      : 'Thunderstorm warning - pause field spray';
+  }
+  if (rain >= 10) {
+    return lang === 'ta'
+      ? 'கனமழை வாய்ப்பு - பாசனத்தை முழுமையாக நிறுத்தவும்'
+      : 'Substantial rain - suspend irrigation';
+  }
+  if (rain >= 2) {
+    return lang === 'ta'
+      ? 'லேசான மழை - உரம்/பூச்சிக்கொல்லி தெளிப்பை ஒத்திவைக்கவும்'
+      : 'Moderate showers - postpone chemical application';
+  }
+  if (maxTemp >= 36) {
+    return lang === 'ta'
+      ? 'அதிக வெப்பம் - காலை/மாலையில் கூடுதல் பாசனம் தேவை'
+      : 'High heat index - schedule morning/evening irrigation';
+  }
+  return lang === 'ta'
+    ? 'சாதகமான சூழல் - வழக்கமான விவசாய பணிகளை தொடரலாம்'
+    : 'Favorable conditions for routine crop management';
+};
+
 export const Weather: React.FC = () => {
   const { t, language } = useLanguage();
   const { theme } = useTheme();
@@ -192,10 +232,15 @@ export const Weather: React.FC = () => {
   // Prepare 7-day forecast chart data
   const forecastChartData = daily?.time?.map((dateStr, idx) => ({
     date: dateStr.slice(5),
+    fullDate: dateStr,
     MaxTemp: daily.temperature_2m_max?.[idx] ?? 0,
     MinTemp: daily.temperature_2m_min?.[idx] ?? 0,
     Rainfall: daily.precipitation_sum?.[idx] ?? 0,
+    code: daily.weather_code?.[idx] ?? 0,
   })) || [];
+
+  const currentMeta = getWeatherMeta(current?.weather_code, language);
+  const CurrentWeatherIcon = currentMeta.icon;
 
   // Spray advisory
   const isHighRain = (daily?.precipitation_sum?.[0] || 0) > 2.0;
@@ -428,13 +473,23 @@ export const Weather: React.FC = () => {
                   <span className="text-5xl sm:text-6xl font-black tracking-tight text-white">
                     {current?.temperature_2m ?? '--'}°C
                   </span>
+                  <div className="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1 text-xs font-semibold text-zinc-200">
+                    <CurrentWeatherIcon className="h-4 w-4 text-amber-300 shrink-0" />
+                    <span>{currentMeta.label}</span>
+                  </div>
                   <span className="text-sm font-medium text-zinc-300 capitalize">
-                    {current?.relative_humidity_2m}% Humidity
+                    {current?.relative_humidity_2m}% {language === 'ta' ? 'ஈரப்பதம்' : 'Humidity'}
                   </span>
                 </div>
-                <p className="mt-2 text-xs text-zinc-400">
-                  Source: {weather.source} • Fetched {weather.fetched_at?.slice(11, 16)} UTC
-                </p>
+                <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-400">
+                  <span>Source: {weather.source}</span>
+                  {current?.time && (
+                    <span>• {language === 'ta' ? 'கண்காணிப்பு' : 'Observation'}: {current.time.replace('T', ' ')}</span>
+                  )}
+                  {weather.fetched_at && (
+                    <span>• {language === 'ta' ? 'பெறப்பட்டது' : 'Retrieved'}: {new Date(weather.fetched_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  )}
+                </div>
               </div>
 
               {/* 3 Metric Pills */}
@@ -534,6 +589,79 @@ export const Weather: React.FC = () => {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
+            </div>
+          </div>
+
+          {/* 7-Day Agronomic Forecast Table */}
+          <div className="rounded-3xl border border-zinc-200/80 bg-white/90 p-4 sm:p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900/60 backdrop-blur-xl min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+              <div>
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-white">
+                  {language === 'ta' ? '7 நாள் விரிவான வானிலை & பாசன வழிகாட்டி' : '7-Day Agronomic Weather & Irrigation Forecast'}
+                </h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  {language === 'ta' ? 'நேரடி Open-Meteo முன்னறிவிப்பு மற்றும் பயிர் பாதுகாப்பு பரிந்துரைகள்' : 'Live multi-day provider projections and daily field operation advisories'}
+                </p>
+              </div>
+              <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 px-2.5 py-1 rounded-xl self-start sm:self-auto">
+                {forecastChartData.length} {language === 'ta' ? 'நாட்கள்' : 'Days'}
+              </span>
+            </div>
+
+            <div className="table-responsive-container">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-zinc-200 dark:border-white/10 text-zinc-400 uppercase text-[10px] tracking-wider">
+                    <th className="py-2.5 px-3">{language === 'ta' ? 'நாள் / தேதி' : 'Date'}</th>
+                    <th className="py-2.5 px-3">{language === 'ta' ? 'வானிலை' : 'Condition'}</th>
+                    <th className="py-2.5 px-3 text-right">{language === 'ta' ? 'அதிகபட்சம்' : 'Max Temp'}</th>
+                    <th className="py-2.5 px-3 text-right">{language === 'ta' ? 'குறைந்தபட்சம்' : 'Min Temp'}</th>
+                    <th className="py-2.5 px-3 text-right">{language === 'ta' ? 'மழை' : 'Rain'}</th>
+                    <th className="py-2.5 px-3">{language === 'ta' ? 'பரிந்துரை' : 'Agronomic Advisory'}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-100 dark:divide-white/5">
+                  {forecastChartData.map((d, i) => {
+                    const meta = getWeatherMeta(d.code, language);
+                    const Icon = meta.icon;
+                    const advisory = getDayAdvisory(d.Rainfall, d.MaxTemp, d.code, language);
+                    const dateObj = new Date(d.fullDate);
+                    const dayName = dateObj.toLocaleDateString(language === 'ta' ? 'ta-IN' : 'en-US', { weekday: 'short' });
+                    return (
+                      <tr key={d.fullDate} className="hover:bg-zinc-50/70 dark:hover:bg-white/5 transition">
+                        <td className="py-2.5 px-3 font-semibold text-zinc-900 dark:text-white whitespace-nowrap">
+                          {dayName}, {d.date}
+                          {i === 0 && (
+                            <span className="ml-1.5 text-[9px] font-bold uppercase bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 px-1.5 py-0.5 rounded-md">
+                              {language === 'ta' ? 'இன்று' : 'Today'}
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-3 whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1.5 text-zinc-700 dark:text-zinc-200 font-medium">
+                            <Icon className="h-3.5 w-3.5 text-zinc-500 shrink-0" />
+                            {meta.label}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-bold text-zinc-900 dark:text-white whitespace-nowrap">
+                          {d.MaxTemp}°C
+                        </td>
+                        <td className="py-2.5 px-3 text-right text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+                          {d.MinTemp}°C
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-medium whitespace-nowrap">
+                          <span className={d.Rainfall > 5 ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-zinc-600 dark:text-zinc-300'}>
+                            {d.Rainfall.toFixed(1)} mm
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 text-zinc-600 dark:text-zinc-300 text-[11px]">
+                          {advisory}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
         </>
