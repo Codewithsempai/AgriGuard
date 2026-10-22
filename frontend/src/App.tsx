@@ -18,6 +18,7 @@ import { Crops } from './pages/Crops';
 import { DiseaseDetection } from './pages/DiseaseDetection';
 import { DiseaseHistory } from './pages/DiseaseHistory';
 import { Weather } from './pages/Weather';
+import { SoilAnalysis } from './pages/SoilAnalysis';
 import { MarketPrices } from './pages/MarketPrices';
 import { Expenses } from './pages/Expenses';
 import { Harvests } from './pages/Harvests';
@@ -54,6 +55,7 @@ export const App: React.FC = () => {
                   <Route path="/disease-detection" element={<DiseaseDetection />} />
                   <Route path="/disease-history" element={<DiseaseHistory />} />
                   <Route path="/weather" element={<Weather />} />
+                  <Route path="/soil-analysis" element={<SoilAnalysis />} />
                   <Route path="/market-prices" element={<MarketPrices />} />
                   <Route path="/expenses" element={<Expenses />} />
                   <Route path="/harvests" element={<Harvests />} />

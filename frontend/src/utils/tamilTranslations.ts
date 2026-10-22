@@ -95,37 +95,3 @@ export function translateTreatment(text: string, isTamil: boolean): string {
 
   return text;
 }
-
-export const TASK_TYPE_TA: Record<string, string> = {
-  sowing: 'விதைப்பு', irrigation: 'நீர்ப்பாசனம்', fertilization: 'உரமிடல்',
-  pest_inspection: 'பூச்சி ஆய்வு', harvesting: 'அறுவடை', other: 'மற்றவை',
-};
-const CROP_TA: Record<string, string> = {
-  tomato: 'தக்காளி', potato: 'உருளைக்கிழங்கு', rice: 'நெல்', corn: 'மக்காச்சோளம்', maize: 'மக்காச்சோளம்',
-  pepper: 'மிளகாய்', apple: 'ஆப்பிள்', grape: 'திராட்சை', wheat: 'கோதுமை', cotton: 'பருத்தி',
-};
-const COND_TA: Record<string, string> = {
-  healthy: 'ஆரோக்கியம்', 'early blight': 'முன்கூட்டிய கருகல் நோய்', 'late blight': 'பின்பருவ கருகல் நோய்',
-  'bacterial spot': 'பாக்டீரியா இலைப்புள்ளி', 'leaf mold': 'இலை பூஞ்சை', 'leaf spot': 'இலைப்புள்ளி',
-  'septoria leaf spot': 'செப்டோரியா இலைப்புள்ளி', 'yellow leaf curl virus': 'மஞ்சள் இலை சுருள் வைரஸ்',
-  'mosaic virus': 'மொசைக் வைரஸ்', 'leaf blast': 'குலைநோய்', 'brown spot': 'பழுப்புப் புள்ளி',
-};
-/** "Tomato___Early_blight" -> "தக்காளி - முன்கூட்டிய கருகல் நோய்" in Tamil mode */
-export function translateLabel(label: string, isTamil: boolean): string {
-  const parts = label.split('___').map(p => p.replace(/_/g, ' ').trim());
-  if (!isTamil) return parts.join(' - ');
-  const out = parts.map((p, i) => {
-    const k = p.toLowerCase();
-    return (i === 0 ? CROP_TA[k] : COND_TA[k]) || COND_TA[k] || CROP_TA[k] || p;
-  });
-  return out.join(' - ');
-}
-
-const TASK_TITLE_TA: Record<string, string> = {
-  'Drip fertigation with potassium nitrate': 'பொட்டாசியம் நைட்ரேட்டுடன் சொட்டு நீர் உரமிடல்',
-  'Scout lower leaves for early blight target spots': 'முன்கூட்டிய கருகல் புள்ளிகளுக்காக கீழ் இலைகளை ஆய்வு செய்யவும்',
-  'Water depth regulation before panicle emergence': 'கதிர் வெளிவருவதற்கு முன் நீர் மட்டத்தை சீராக்கவும்',
-};
-export function translateTask(title: string, isTamil: boolean): string {
-  return isTamil ? TASK_TITLE_TA[title] || translateTreatment(title, true) : title;
-}

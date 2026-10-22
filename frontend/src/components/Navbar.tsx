@@ -19,7 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, unreadCount = 0
   const navigate = useNavigate();
 
   return (
-    <header className="relative shrink-0 z-40 flex h-16 w-full items-center justify-between border-b border-zinc-200/80 bg-white/70 px-2.5 sm:px-6 backdrop-blur-2xl dark:border-white/10 dark:bg-black/60 shadow-xs">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-zinc-200/80 bg-white/70 px-2.5 sm:px-6 backdrop-blur-2xl dark:border-white/10 dark:bg-black/60 shadow-xs">
       <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
         {isAuthenticated && (
           <button

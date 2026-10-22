@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, MapPin, Grid, Leaf, ScanSearch, History, CloudSun,
-  TrendingUp, Receipt, Wheat, Calendar, Bug, BookOpen,
+  FlaskConical, TrendingUp, Receipt, Wheat, Calendar, Bug, BookOpen,
   BarChart3, Bell, User, Settings, ShieldCheck, X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -13,18 +13,9 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-const SECTION_TA: Record<string, string> = {
-  'Core Operations': 'முக்கிய செயல்பாடுகள்',
-  'AI Intelligence & Health': 'AI நுண்ணறிவு & பயிர் நலம்',
-  'Field Management': 'பண்ணை மேலாண்மை',
-  'Financials & Market': 'நிதி & சந்தை',
-  'Personal & System': 'தனிப்பட்ட & அமைப்பு',
-};
-const sectionTitle = (s: string, lang: string) => (lang === 'ta' ? SECTION_TA[s] || s : s);
-
 export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
   const { isAdmin } = useAuth();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   const navSections = [
     {
@@ -41,6 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
       items: [
         { to: '/disease-detection', label: t('nav_disease_detect'), icon: ScanSearch, badge: 'AI' },
         { to: '/disease-history', label: t('nav_disease_history'), icon: History },
+        { to: '/soil-analysis', label: t('nav_soil'), icon: FlaskConical },
         { to: '/weather', label: t('nav_weather'), icon: CloudSun },
       ],
     },
@@ -84,7 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
 
       {/* Sidebar container - Collapsible on PC/Laptop & Slide-in Drawer on Mobile */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-zinc-200/80 bg-white/95 backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-950/95 transition-all duration-300 ease-in-out lg:static lg:h-full lg:z-auto ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-zinc-200/80 bg-white/95 backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-950/95 transition-all duration-300 ease-in-out lg:static lg:z-auto ${
           open
             ? 'w-72 sm:w-64 translate-x-0 opacity-100 shadow-2xl lg:shadow-none lg:w-64'
             : '-translate-x-full w-0 opacity-0 pointer-events-none lg:w-0 lg:opacity-0 lg:-translate-x-full lg:overflow-hidden lg:border-r-0'
@@ -93,7 +85,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
         <div className="w-64 flex flex-col h-full shrink-0">
           {/* Header in mobile drawer */}
           <div className="flex h-16 items-center justify-between px-6 border-b border-zinc-200/80 dark:border-white/10 lg:hidden shrink-0">
-            <span className="font-bold text-zinc-900 dark:text-white">{language === 'ta' ? 'வழிசெலுத்தல்' : 'AgriGuard Navigation'}</span>
+            <span className="font-bold text-zinc-900 dark:text-white">AgriGuard Navigation</span>
             <button
               onClick={onClose}
               className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/10"
@@ -107,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
             {navSections.map((section, idx) => (
               <div key={idx} className="space-y-1">
                 <h3 className="px-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                  {sectionTitle(section.title, language)}
+                  {section.title}
                 </h3>
                 {section.items.map((item) => {
                   const Icon = item.icon;
@@ -134,7 +126,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
                       </div>
                       {item.badge && (
                         <span className="rounded-md bg-zinc-200 text-zinc-900 dark:bg-white/20 dark:text-white px-1.5 py-0.5 text-[10px] font-bold">
-                          {item.badge === 'Admin' && language === 'ta' ? 'நிர்வாகி' : item.badge}
+                          {item.badge}
                         </span>
                       )}
                     </NavLink>
@@ -146,8 +138,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
 
           <div className="p-4 border-t border-zinc-200/80 dark:border-white/10 text-center shrink-0">
             <div className="rounded-xl bg-zinc-100/80 p-3 text-xs text-zinc-800 dark:bg-white/5 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/10 backdrop-blur-md">
-              <span className="font-semibold block mb-0.5">{language === 'ta' ? 'அக்ரிகார்டு எண்டர்பிரைஸ்' : 'AgriGuard Enterprise'}</span>
-              <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{language === 'ta' ? 'v1.0.0 • ஆஃப்லைன் தயார்' : 'v1.0.0 • SQLite Offline Ready'}</span>
+              <span className="font-semibold block mb-0.5">AgriGuard Enterprise</span>
+              <span className="text-[11px] text-zinc-500 dark:text-zinc-400">v1.0.0 • SQLite Offline Ready</span>
             </div>
           </div>
         </div>

@@ -32,7 +32,7 @@ export const AppLayout: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative flex h-[100dvh] w-full max-w-full overflow-hidden bg-zinc-100/60 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
+    <div className="relative flex min-h-[100dvh] w-full max-w-full overflow-x-hidden bg-zinc-100/60 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
       {/* Monochromatic Aesthetic Ambient Glows */}
       <div className="pointer-events-none fixed -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-zinc-300/40 blur-[140px] dark:bg-white/[0.04]" />
       <div className="pointer-events-none fixed top-1/2 -left-40 h-[500px] w-[500px] rounded-full bg-zinc-200/50 blur-[140px] dark:bg-white/[0.03]" />
@@ -40,13 +40,13 @@ export const AppLayout: React.FC = () => {
 
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
-      <div className="flex flex-1 flex-col min-w-0 w-full max-w-full h-full relative z-10">
+      <div className="flex flex-1 flex-col min-w-0 w-full max-w-full overflow-x-hidden relative z-10">
         <Navbar
           onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
           unreadCount={unreadCount}
         />
         
-        <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-3 sm:p-5 lg:p-8 pb-28 sm:pb-32 lg:pb-8 min-w-0 w-full max-w-full">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-5 lg:p-8 pb-28 sm:pb-32 lg:pb-8 min-w-0 w-full max-w-full">
           <div className="mx-auto max-w-7xl w-full min-w-0">
             <Outlet />
           </div>

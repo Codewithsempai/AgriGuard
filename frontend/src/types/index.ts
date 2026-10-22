@@ -119,6 +119,35 @@ export interface DiseaseHistoryItem {
   details?: DiseaseDetails;
 }
 
+export interface SoilAnalysisResult {
+  ratings: {
+    nitrogen: 'low' | 'medium' | 'high';
+    phosphorus: 'low' | 'medium' | 'high';
+    potassium: 'low' | 'medium' | 'high';
+  };
+  recommendations: Array<{
+    nutrient: string;
+    rule: string;
+    advice: string;
+  }>;
+  crop_note?: string | null;
+  disclaimer: string;
+}
+
+export interface SoilHistoryItem {
+  id: number;
+  field_id?: number | null;
+  crop_name?: string | null;
+  ph: number;
+  nitrogen: number;
+  phosphorus: number;
+  potassium: number;
+  soil_type?: string | null;
+  tested_on: string;
+  ratings?: SoilAnalysisResult['ratings'];
+  recommendations?: SoilAnalysisResult['recommendations'];
+}
+
 export interface MarketPrice {
   id: number;
   crop: string;
@@ -186,17 +215,26 @@ export interface WeatherData {
   fetched_at: string;
   data: {
     current?: {
+      time?: string;
       temperature_2m: number;
       relative_humidity_2m: number;
       precipitation: number;
       weather_code: number;
       wind_speed_10m: number;
     };
+    hourly?: {
+      time: string[];
+      precipitation?: number[];
+      precipitation_probability?: number[];
+      wind_speed_10m?: number[];
+      relative_humidity_2m?: number[];
+    };
     daily?: {
       time: string[];
       temperature_2m_max: number[];
       temperature_2m_min: number[];
       precipitation_sum: number[];
+      precipitation_probability_max?: number[];
       weather_code: number[];
     };
   };
