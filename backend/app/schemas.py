@@ -60,3 +60,12 @@ class PestIn(BaseModel):
     severity: str = F(default="low", pattern="^(low|medium|high)$")
     observed_on: date = F(default_factory=date.today)
 
+class SoilIn(BaseModel):
+    field_id: int | None = None
+    crop_name: str | None = None
+    ph: float = F(ge=0, le=14)
+    nitrogen: float = F(ge=0, description="available N, kg/ha")
+    phosphorus: float = F(ge=0, description="available P, kg/ha")
+    potassium: float = F(ge=0, description="available K, kg/ha")
+    soil_type: str | None = None
+    save: bool = True

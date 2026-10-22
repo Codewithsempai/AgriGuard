@@ -49,6 +49,13 @@ def test_profit_report_and_dashboard(client):
     assert client.get("/api/v1/reports/summary?format=csv", headers=h).text.startswith("crop,status")
     assert client.get("/api/v1/dashboard", headers=h).json()["crops"] == 1
 
+def test_soil_rules(client):
+    h = auth(client, "soil@x.com")
+    r = client.post("/api/v1/soil/analyze", json={"ph": 5.0, "nitrogen": 100, "phosphorus": 5, "potassium": 300}, headers=h).json()
+    assert r["ratings"] == {"nitrogen": "low", "phosphorus": "low", "potassium": "high"}
+    assert any(x["nutrient"] == "pH" for x in r["recommendations"])
+    assert client.post("/api/v1/soil/analyze", json={"ph": 15, "nitrogen": 1, "phosphorus": 1, "potassium": 1}, headers=h).status_code == 422
+
 def test_disease_upload_validation_and_demo_mode(client):
     h = auth(client, "leaf@x.com")
     bad = client.post("/api/v1/disease/predict", files={"file": ("a.txt", b"hello", "text/plain")}, headers=h)

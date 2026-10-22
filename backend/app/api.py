@@ -124,6 +124,30 @@ def mark_all_read(db: Session = Depends(get_db), user=Depends(current_user)):
     db.commit()
     return {"status": "ok"}
 
+# ---------- Soil ----------
+@api.post("/soil/analyze", tags=["soil"])
+def soil_analyze(data: S.SoilIn, db: Session = Depends(get_db), user=Depends(current_user)):
+    if data.field_id is not None:
+        owned_or_404(db, M.Field, data.field_id, user)
+    result = svc.analyze_soil(data.ph, data.nitrogen, data.phosphorus, data.potassium, data.crop_name)
+    if data.save:
+        d = data.model_dump(exclude={"save"})
+        db.add(M.SoilTest(user_id=user.id, **d))
+        db.commit()
+    return result
+
+@api.get("/soil/history", tags=["soil"])
+def soil_history(db: Session = Depends(get_db), user=Depends(current_user)):
+    items = db.query(M.SoilTest).filter_by(user_id=user.id).order_by(M.SoilTest.id.desc()).all()
+    out = []
+    for s in items:
+        r = row(s)
+        analysis = svc.analyze_soil(s.ph, s.nitrogen, s.phosphorus, s.potassium, s.crop_name)
+        r["ratings"] = analysis["ratings"]
+        r["recommendations"] = analysis["recommendations"]
+        out.append(r)
+    return out
+
 # ---------- Disease detection ----------
 ALLOWED = {"image/jpeg": b"\xff\xd8\xff", "image/png": b"\x89PNG\r\n\x1a\n"}
 MAX_BYTES = 10 * 1024 * 1024
