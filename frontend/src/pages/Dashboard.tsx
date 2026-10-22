@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   MapPin, Grid, Leaf, DollarSign, TrendingUp, AlertTriangle, CheckCircle2,
-  Calendar, ScanSearch, FlaskConical, Receipt, Wheat, ArrowUpRight, Clock
+  Calendar, ScanSearch, Receipt, Wheat, ArrowUpRight, Clock
 } from 'lucide-react';
 import { api } from '../services/api';
 import type { DashboardStats, Task } from '../types';
@@ -235,24 +235,6 @@ export const Dashboard: React.FC = () => {
                       {t('dash_diagnose_leaf')}
                     </span>
                     <span className="text-[10px] text-slate-400">{language === 'ta' ? 'கூகுள் ஜெமினி & நியூரல் வகைப்படுத்தி' : 'Google Gemini & Neural Classifier'}</span>
-                  </div>
-                </div>
-                <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-black dark:group-hover:text-white transition" />
-              </Link>
-
-              <Link
-                to="/soil-analysis"
-                className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white/60 p-3 hover:bg-zinc-100 hover:border-zinc-400 dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/10 transition group backdrop-blur-xs"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-zinc-100 p-2 text-zinc-900 border border-zinc-200 dark:bg-white/10 dark:text-white dark:border-white/15">
-                    <FlaskConical className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 block group-hover:text-black dark:group-hover:text-white transition">
-                      {t('dash_test_soil')}
-                    </span>
-                    <span className="text-[10px] text-slate-400">NPK & pH Rule Evaluator</span>
                   </div>
                 </div>
                 <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-black dark:group-hover:text-white transition" />

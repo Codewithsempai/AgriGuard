@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, MapPin, Grid, Leaf, ScanSearch, History, CloudSun,
-  FlaskConical, TrendingUp, Receipt, Wheat, Calendar, Bug, BookOpen,
+  TrendingUp, Receipt, Wheat, Calendar, Bug, BookOpen,
   BarChart3, Bell, User, Settings, ShieldCheck, X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -41,7 +41,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
       items: [
         { to: '/disease-detection', label: t('nav_disease_detect'), icon: ScanSearch, badge: 'AI' },
         { to: '/disease-history', label: t('nav_disease_history'), icon: History },
-        { to: '/soil-analysis', label: t('nav_soil'), icon: FlaskConical },
         { to: '/weather', label: t('nav_weather'), icon: CloudSun },
       ],
     },

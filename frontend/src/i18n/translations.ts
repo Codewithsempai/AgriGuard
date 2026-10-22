@@ -13,7 +13,6 @@ export const translations = {
     nav_disease_detect: 'AI Disease Detection',
     nav_disease_history: 'Detection History',
     nav_weather: 'Weather Intelligence',
-    nav_soil: 'Soil Health Advisor',
     nav_market: 'Market Prices',
     nav_expenses: 'Expenses & Costs',
     nav_harvests: 'Harvest Records',
@@ -45,7 +44,6 @@ export const translations = {
     dash_diagnose_leaf: 'Diagnose Crop Leaf',
     dash_add_expense: 'Log New Expense',
     dash_record_harvest: 'Record Harvest',
-    dash_test_soil: 'Soil Health Check',
     
     // Actions & Common
     btn_save: 'Save Changes',
@@ -116,7 +114,6 @@ export const translations = {
     nav_disease_detect: 'AI நோய் கண்டறிதல்',
     nav_disease_history: 'பகுப்பாய்வு வரலாறு',
     nav_weather: 'வானிலை தகவல்',
-    nav_soil: 'மண் வள ஆலோசகர்',
     nav_market: 'சந்தை விலை நிலவரம்',
     nav_expenses: 'செலவு மேலாண்மை',
     nav_harvests: 'அறுவடை பதிவுகள்',
@@ -148,7 +145,6 @@ export const translations = {
     dash_diagnose_leaf: 'இலை நோய் கண்டறி',
     dash_add_expense: 'புதிய செலவு பதிவு',
     dash_record_harvest: 'அறுவடை பதிவு',
-    dash_test_soil: 'மண் பரிசோதனை',
     
     // Actions & Common
     btn_save: 'சேமிக்க',

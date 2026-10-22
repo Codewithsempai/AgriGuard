@@ -91,13 +91,6 @@ def seed():
                 M.Task(user_id=farmer.id, crop_id=crop2.id, title="Water depth regulation before panicle emergence", task_type="irrigation", due_date=today + timedelta(days=4), completed=False),
             ])
 
-            # Add soil test
-            db.add(M.SoilTest(
-                user_id=farmer.id, field_id=field1.id, crop_name="tomato",
-                ph=6.4, nitrogen=250.0, phosphorus=18.5, potassium=210.0,
-                soil_type="Red Sandy Loam", tested_on=today - timedelta(days=12)
-            ))
-
             db.commit()
             print("Successfully seeded realistic farm demo data!")
 
