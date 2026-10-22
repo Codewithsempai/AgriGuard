@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   MapPin, Grid, Leaf, DollarSign, TrendingUp, AlertTriangle, CheckCircle2,
-  Calendar, ScanSearch, FlaskConical, Receipt, Wheat, ArrowUpRight, Clock
+  Calendar, ScanSearch, Receipt, Wheat, ArrowUpRight, Clock
 } from 'lucide-react';
 import { api } from '../services/api';
 import type { DashboardStats, Task } from '../types';
 import { StatCard } from '../components/StatCard';
 import { LoadingSkeleton, EmptyState } from '../components/EmptyState';
 import { useLanguage } from '../context/LanguageContext';
+import { LeafImage } from '../components/LeafImage';
+import { translateTask, translateLabel, TASK_TYPE_TA } from '../utils/tamilTranslations';
 import { useTheme } from '../context/ThemeContext';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend
@@ -54,9 +56,9 @@ export const Dashboard: React.FC = () => {
   const chartData = [
     {
       name: language === 'ta' ? 'நிதி நிலவரம்' : 'Financials (₹)',
-      Expenses: stats?.total_cost || 0,
-      Revenue: stats?.revenue || 0,
-      NetProfit: stats?.profit || 0,
+      [language === 'ta' ? 'செலவுகள்' : 'Expenses']: stats?.total_cost || 0,
+      [language === 'ta' ? 'வருவாய்' : 'Revenue']: stats?.revenue || 0,
+      [language === 'ta' ? 'நிகர லாபம்' : 'NetProfit']: stats?.profit || 0,
     },
   ];
 
@@ -134,7 +136,7 @@ export const Dashboard: React.FC = () => {
         <StatCard
           title={t('dash_active_crops')}
           value={stats?.crops ?? 0}
-          subtitle={`${stats?.expected_yield_kg ?? 0} kg expected`}
+          subtitle={language === 'ta' ? `${stats?.expected_yield_kg ?? 0} கிலோ எதிர்பார்ப்பு` : `${stats?.expected_yield_kg ?? 0} kg expected`}
           icon={Leaf}
           color="blue"
         />
@@ -148,7 +150,7 @@ export const Dashboard: React.FC = () => {
         <StatCard
           title={t('dash_net_profit')}
           value={`₹${(stats?.profit ?? 0).toLocaleString()}`}
-          subtitle={(stats?.profit ?? 0) >= 0 ? 'Healthy financial margin' : 'Negative balance'}
+          subtitle={(stats?.profit ?? 0) >= 0 ? (language === 'ta' ? 'ஆரோக்கியமான லாப விகிதம்' : 'Healthy financial margin') : (language === 'ta' ? 'எதிர்மறை இருப்பு' : 'Negative balance')}
           icon={TrendingUp}
           color={(stats?.profit ?? 0) >= 0 ? 'emerald' : 'amber'}
         />
@@ -190,17 +192,17 @@ export const Dashboard: React.FC = () => {
                 />
                 <Legend wrapperStyle={{ fontSize: '12px', color: theme === 'dark' ? '#e4e4e7' : '#27272a' }} />
                 <Bar
-                  dataKey="Expenses"
+                  dataKey={language === 'ta' ? 'செலவுகள்' : 'Expenses'}
                   fill={theme === 'dark' ? '#52525b' : '#94a3b8'}
                   radius={[6, 6, 0, 0]}
                 />
                 <Bar
-                  dataKey="Revenue"
+                  dataKey={language === 'ta' ? 'வருவாய்' : 'Revenue'}
                   fill={theme === 'dark' ? '#e4e4e7' : '#18181b'}
                   radius={[6, 6, 0, 0]}
                 />
                 <Bar
-                  dataKey="NetProfit"
+                  dataKey={language === 'ta' ? 'நிகர லாபம்' : 'NetProfit'}
                   fill={theme === 'dark' ? '#a1a1aa' : '#52525b'}
                   radius={[6, 6, 0, 0]}
                 />
@@ -232,25 +234,7 @@ export const Dashboard: React.FC = () => {
                     <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 block group-hover:text-black dark:group-hover:text-white transition">
                       {t('dash_diagnose_leaf')}
                     </span>
-                    <span className="text-[10px] text-slate-400">Google Gemini & Neural Classifier</span>
-                  </div>
-                </div>
-                <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-black dark:group-hover:text-white transition" />
-              </Link>
-
-              <Link
-                to="/soil-analysis"
-                className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white/60 p-3 hover:bg-zinc-100 hover:border-zinc-400 dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/10 transition group backdrop-blur-xs"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="rounded-lg bg-zinc-100 p-2 text-zinc-900 border border-zinc-200 dark:bg-white/10 dark:text-white dark:border-white/15">
-                    <FlaskConical className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 block group-hover:text-black dark:group-hover:text-white transition">
-                      {t('dash_test_soil')}
-                    </span>
-                    <span className="text-[10px] text-slate-400">NPK & pH Rule Evaluator</span>
+                    <span className="text-[10px] text-slate-400">{language === 'ta' ? 'கூகுள் ஜெமினி & நியூரல் வகைப்படுத்தி' : 'Google Gemini & Neural Classifier'}</span>
                   </div>
                 </div>
                 <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-black dark:group-hover:text-white transition" />
@@ -268,7 +252,7 @@ export const Dashboard: React.FC = () => {
                     <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 block group-hover:text-black dark:group-hover:text-white transition">
                       {t('dash_record_harvest')}
                     </span>
-                    <span className="text-[10px] text-slate-400">Record Yield & Sale Price</span>
+                    <span className="text-[10px] text-slate-400">{language === 'ta' ? 'விளைச்சல் & விற்பனை விலையை பதிவு செய்' : 'Record Yield & Sale Price'}</span>
                   </div>
                 </div>
                 <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-black dark:group-hover:text-white transition" />
@@ -308,13 +292,13 @@ export const Dashboard: React.FC = () => {
                     </button>
                     <div className="min-w-0 flex-1">
                       <p className={`text-sm font-medium truncate ${task.completed ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200'}`}>
-                        {task.title}
+                        {translateTask(task.title, language === 'ta')}
                       </p>
                       <span className="text-[11px] text-slate-400 flex flex-wrap items-center gap-1 mt-0.5">
                         <Clock className="h-3 w-3 shrink-0" />
-                        <span>Due {task.due_date}</span>
+                        <span>{language === 'ta' ? 'கெடு' : 'Due'} {task.due_date}</span>
                         <span className="capitalize px-1.5 py-0.2 rounded-sm bg-zinc-100 dark:bg-white/10 text-[10px] text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-white/10">
-                          {task.task_type.replace('_', ' ')}
+                          {language === 'ta' ? (TASK_TYPE_TA[task.task_type] || task.task_type) : task.task_type.replace('_', ' ')}
                         </span>
                       </span>
                     </div>
@@ -354,20 +338,13 @@ export const Dashboard: React.FC = () => {
               {stats.recent_disease.map((diag) => (
                 <div key={diag.id} className="flex items-center justify-between gap-3 py-3 min-w-0">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <img
-                      src={diag.image_url}
-                      alt="Crop leaf"
-                      className="h-10 w-10 rounded-lg object-cover border border-zinc-200 dark:border-white/15 shrink-0"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = 'none';
-                      }}
-                    />
+                    <LeafImage src={diag.image_url} className="h-10 w-10" />
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
-                        {diag.predicted_label ? diag.predicted_label.replace('___', ' - ').replace(/_/g, ' ') : 'Demo analysis'}
+                        {diag.predicted_label ? translateLabel(diag.predicted_label, language === 'ta') : (language === 'ta' ? 'டெமோ பகுப்பாய்வு' : 'Demo analysis')}
                       </p>
                       <p className="text-[11px] text-slate-400 truncate">
-                        {diag.created_at?.slice(0, 10)} • {diag.mode === 'model' ? `${((diag.confidence || 0) * 100).toFixed(1)}% confidence` : 'Demo mode'}
+                        {diag.created_at?.slice(0, 10)} • {diag.mode === 'model' ? (language === 'ta' ? `${((diag.confidence || 0) * 100).toFixed(1)}% நம்பகத்தன்மை` : `${((diag.confidence || 0) * 100).toFixed(1)}% confidence`) : (language === 'ta' ? 'டெமோ முறை' : 'Demo mode')}
                       </p>
                     </div>
                   </div>
@@ -376,7 +353,7 @@ export const Dashboard: React.FC = () => {
                       ? 'bg-zinc-900 text-white border-zinc-800 dark:bg-white dark:text-black dark:border-white'
                       : 'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-white/10 dark:text-zinc-300 dark:border-white/10'
                   }`}>
-                    {diag.mode}
+                    {diag.mode === 'model' ? (language === 'ta' ? 'மாடல்' : 'model') : diag.mode}
                   </span>
                 </div>
               ))}

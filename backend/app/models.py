@@ -66,18 +66,6 @@ class Harvest(Owned, Base):
     price_per_kg: Mapped[float] = mapped_column(Float)
     harvested_on: Mapped[date] = mapped_column(Date)
 
-class SoilTest(Owned, Base):
-    __tablename__ = "soil_tests"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    field_id: Mapped[int | None] = mapped_column(ForeignKey("fields.id", ondelete="SET NULL"), index=True)
-    crop_name: Mapped[str | None] = mapped_column(String(80))
-    ph: Mapped[float] = mapped_column(Float)
-    nitrogen: Mapped[float] = mapped_column(Float)
-    phosphorus: Mapped[float] = mapped_column(Float)
-    potassium: Mapped[float] = mapped_column(Float)
-    soil_type: Mapped[str | None] = mapped_column(String(60))
-    tested_on: Mapped[date] = mapped_column(Date, default=date.today)
-
 class Task(Owned, Base):
     __tablename__ = "tasks"
     id: Mapped[int] = mapped_column(primary_key=True)
