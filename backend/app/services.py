@@ -1,44 +1,8 @@
-"""Business logic: soil rules, disease model, weather."""
+"""Business logic: disease model, weather."""
 import json, os
 from datetime import datetime
 import httpx
 from .disease_data import get_disease_details
-
-# --- Soil: transparent rules (kg/ha, common Indian soil-test rating classes) ---
-LOW = {"nitrogen": 280, "phosphorus": 11, "potassium": 110}
-HIGH = {"nitrogen": 560, "phosphorus": 25, "potassium": 280}
-CROP_NEEDS = {  # general NPK emphasis only; confirm with local agriculture office
-    "rice": "Nitrogen-responsive; split N into 2-3 doses (basal, tillering, panicle initiation).",
-    "maize": "High N demand; ensure adequate P at sowing for strong root development.",
-    "tomato": "Needs balanced NPK; potassium strongly supports fruit firmness and disease tolerance.",
-    "groundnut": "Legume: fixes atmospheric N; apply gypsum at pegging for calcium and pod filling.",
-    "wheat": "Responds well to balanced N & P; split N application at CRI (crown root initiation).",
-    "cotton": "Deep rooted; requires balanced NPK and zinc supplementation.",
-    "chilli": "Demands high potassium and phosphorus; maintain organic mulch."
-}
-
-def rate(v, k):
-    return "low" if v < LOW[k] else "high" if v >= HIGH[k] else "medium"
-
-def analyze_soil(ph, n, p, k, crop=None):
-    recs, ratings = [], {}
-    for key, val in (("nitrogen", n), ("phosphorus", p), ("potassium", k)):
-        ratings[key] = rate(val, key)
-        if ratings[key] == "low":
-            recs.append({"nutrient": key, "rule": f"{key} {val} < {LOW[key]} kg/ha",
-                         "advice": f"Soil {key} is low; apply {key}-supplying fertilizer (urea / DAP-SSP / MOP) at the rate recommended for your crop."})
-        elif ratings[key] == "high":
-            recs.append({"nutrient": key, "rule": f"{key} {val} >= {HIGH[key]} kg/ha",
-                         "advice": f"Soil {key} is high; reduce or skip {key} fertilizer this season."})
-    if ph < 5.5:
-        recs.append({"nutrient": "pH", "rule": f"pH {ph} < 5.5", "advice": "Acidic soil: consider agricultural lime (calcium carbonate) application after lab titration."})
-    elif ph > 8.0:
-        recs.append({"nutrient": "pH", "rule": f"pH {ph} > 8.0", "advice": "Alkaline soil: consider gypsum and green manuring; avoid alkaline-forming fertilizers."})
-    elif not (6.0 <= ph <= 7.5):
-        recs.append({"nutrient": "pH", "rule": f"pH {ph} outside 6.0-7.5", "advice": "Slightly outside the ideal neutral range for most crops; monitor periodically."})
-    note = CROP_NEEDS.get((crop or "").lower())
-    return {"ratings": ratings, "recommendations": recs, "crop_note": note,
-            "disclaimer": "Rule-based guidance with transparent agronomic thresholds. Exact doses depend on crop variety, soil texture, and regional extension guidelines."}
 
 # --- Disease model ---
 _model = None
@@ -287,8 +251,7 @@ def fetch_weather(lat, lon):
         "longitude": lon,
         "timezone": "auto",
         "current": "temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m",
-        "hourly": "precipitation,precipitation_probability,wind_speed_10m,relative_humidity_2m",
-        "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weather_code",
+        "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code",
         "forecast_days": 7
     }
     r = httpx.get(url, params=params, timeout=10)

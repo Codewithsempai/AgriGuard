@@ -1,8 +1,7 @@
 import axios from 'axios';
 import type {
   User, Farm, Field, Crop, Expense, Harvest, Task, PestObservation,
-  DiseasePredictionResponse, DiseaseHistoryItem, SoilAnalysisResult,
-  SoilHistoryItem, MarketPrice, Article, NotificationItem, DashboardStats,
+  DiseasePredictionResponse, DiseaseHistoryItem, MarketPrice, Article, NotificationItem, DashboardStats,
   ReportSummary, WeatherData
 } from '../types';
 
@@ -182,34 +181,9 @@ export const api = {
   configureGeminiKey: (apiKey: string) =>
     apiClient.post<{ status: string; gemini_active: boolean }>('/disease/configure-key', { api_key: apiKey }).then(r => r.data),
 
-  // Soil
-  analyzeSoil: (data: { field_id?: number | null; crop_name?: string | null; ph: number; nitrogen: number; phosphorus: number; potassium: number; soil_type?: string | null; save?: boolean }) =>
-    apiClient.post<SoilAnalysisResult>('/soil/analyze', data).then(r => r.data),
-  getSoilHistory: () =>
-    apiClient.get<SoilHistoryItem[]>('/soil/history').then(r => r.data),
-
   // Weather
-  getWeather: async (lat: number, lon: number): Promise<WeatherData> => {
-    try {
-      const res = await apiClient.get<WeatherData>('/weather/forecast', { params: { lat, lon } });
-      return res.data;
-    } catch (backendError) {
-      // Live fallback directly to Open-Meteo when backend is asleep, cold-starting, or unauthenticated
-      try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&timezone=auto&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&hourly=precipitation,precipitation_probability,wind_speed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weather_code&forecast_days=7`;
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(`Open-Meteo API returned status ${resp.status}`);
-        const data = await resp.json();
-        return {
-          source: 'Open-Meteo (open-meteo.com)',
-          fetched_at: new Date().toISOString(),
-          data,
-        };
-      } catch {
-        throw backendError;
-      }
-    }
-  },
+  getWeather: (lat: number, lon: number) =>
+    apiClient.get<WeatherData>('/weather/forecast', { params: { lat, lon } }).then(r => r.data),
 
   // Market Prices
   getMarketPrices: (params?: { crop?: string; market?: string; on?: string }) =>

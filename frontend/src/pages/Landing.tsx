@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Sprout, ScanSearch, FlaskConical, CloudSun, TrendingUp, ShieldCheck,
+  Sprout, ScanSearch, CloudSun, TrendingUp, ShieldCheck,
   ArrowRight, CheckCircle2, ChevronRight, BarChart3, Database, Sparkles
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -16,14 +16,6 @@ export const Landing: React.FC = () => {
       desc: language === 'ta'
         ? 'நவீன ஆழமான கற்றல் மாதிரி மூலம் இலை நோய்களை துல்லியமாக கண்டறிந்து உடனடி சிகிச்சை முறைகளை பெறலாம்.'
         : 'Deep learning neural models identify foliar blights, rusts, and fungal infections with evidence-based treatment guidance.',
-      color: 'text-zinc-900 bg-zinc-100 border border-zinc-200 dark:text-white dark:bg-white/10 dark:border-white/20',
-    },
-    {
-      icon: FlaskConical,
-      title: language === 'ta' ? 'மண் வள மற்றும் உர ஆலோசகர்' : 'Soil Health & Fertility Advisor',
-      desc: language === 'ta'
-        ? 'pH மற்றும் NPK சத்துக்களின் அடிப்படையில் அறிவியல் விதிகளின்படி உகந்த உர பரிந்துரைகளை வழங்குகிறது.'
-        : 'Transparent, rule-based agronomic engine evaluates NPK ratings and pH adjustments for target crops.',
       color: 'text-zinc-900 bg-zinc-100 border border-zinc-200 dark:text-white dark:bg-white/10 dark:border-white/20',
     },
     {
@@ -83,7 +75,7 @@ export const Landing: React.FC = () => {
         <p className="mt-6 max-w-2xl mx-auto text-base sm:text-lg text-slate-600 dark:text-slate-300">
           {language === 'ta'
             ? 'பயிர் இலை நோய்களை நொடிகளில் கண்டறியுங்கள், மண் சத்துக்களை பகுப்பாய்வு செய்யுங்கள், பண்ணை செலவுகளை நிர்வகித்து லாபத்தை அதிகப்படுத்துங்கள்.'
-            : 'Unify farm operations, instant deep-learning crop leaf diagnosis, scientific soil nutrition planning, and financial profit analytics in one secure platform.'}
+            : 'Unify farm operations, instant deep-learning crop leaf diagnosis, and financial profit analytics in one secure platform.'}
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -167,7 +159,7 @@ export const Landing: React.FC = () => {
             <p className="mt-3 text-zinc-300 text-sm sm:text-base leading-relaxed">
               {language === 'ta'
                 ? 'AgriGuard AI தவறான கணிப்புகளை உருவாக்குவதில்லை. தெளிவான புகைப்படங்களுக்கான உண்மையான AI முடிவுகள், வெளிப்படையான மண் பரிசோதனை விதிகள், மற்றும் அதிகாரப்பூர்வ வானிலை சேவைகளை மட்டுமே பயன்படுத்துகிறது.'
-                : 'AgriGuard AI never fabricates diagnoses or artificial confidence numbers. All soil guidance follows documented extension agronomy formulas, and image analyses include detailed cultural, biological, and chemical mitigation pathways.'}
+                : 'AgriGuard AI never fabricates diagnoses or artificial confidence numbers. Image analyses include detailed cultural, biological, and chemical mitigation pathways.'}
             </p>
             <div className="mt-6">
               <Link
