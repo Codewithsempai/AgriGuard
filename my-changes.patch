@@ -1,0 +1,345 @@
+diff --git a/frontend/src/components/LeafImage.tsx b/frontend/src/components/LeafImage.tsx
+new file mode 100644
+index 0000000..d622c39
+--- /dev/null
++++ b/frontend/src/components/LeafImage.tsx
+@@ -0,0 +1,23 @@
++import React, { useState } from 'react';
++import { Leaf } from 'lucide-react';
++
++/** Leaf thumbnail with a graceful icon fallback when the file is missing (e.g. wiped server uploads). */
++export const LeafImage: React.FC<{ src?: string; className?: string }> = ({ src, className = 'h-10 w-10' }) => {
++  const [failed, setFailed] = useState(false);
++  if (!src || failed) {
++    return (
++      <div className={`${className} flex items-center justify-center rounded-lg border border-zinc-200 bg-zinc-100 text-zinc-500 dark:border-white/15 dark:bg-white/10 dark:text-zinc-300 shrink-0`}>
++        <Leaf className="h-1/2 w-1/2" />
++      </div>
++    );
++  }
++  return (
++    <img
++      src={src}
++      alt=""
++      loading="lazy"
++      onError={() => setFailed(true)}
++      className={`${className} rounded-lg object-cover border border-zinc-200 dark:border-white/15 shrink-0`}
++    />
++  );
++};
+diff --git a/frontend/src/components/Navbar.tsx b/frontend/src/components/Navbar.tsx
+index 9fd2ecf..1805e19 100644
+--- a/frontend/src/components/Navbar.tsx
++++ b/frontend/src/components/Navbar.tsx
+@@ -19,7 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, unreadCount = 0
+   const navigate = useNavigate();
+ 
+   return (
+-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-zinc-200/80 bg-white/70 px-2.5 sm:px-6 backdrop-blur-2xl dark:border-white/10 dark:bg-black/60 shadow-xs">
++    <header className="relative shrink-0 z-40 flex h-16 w-full items-center justify-between border-b border-zinc-200/80 bg-white/70 px-2.5 sm:px-6 backdrop-blur-2xl dark:border-white/10 dark:bg-black/60 shadow-xs">
+       <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+         {isAuthenticated && (
+           <button
+diff --git a/frontend/src/components/Sidebar.tsx b/frontend/src/components/Sidebar.tsx
+index 6001ee3..fb1fb92 100644
+--- a/frontend/src/components/Sidebar.tsx
++++ b/frontend/src/components/Sidebar.tsx
+@@ -13,9 +13,18 @@ interface SidebarProps {
+   onClose: () => void;
+ }
+ 
++const SECTION_TA: Record<string, string> = {
++  'Core Operations': 'முக்கிய செயல்பாடுகள்',
++  'AI Intelligence & Health': 'AI நுண்ணறிவு & பயிர் நலம்',
++  'Field Management': 'பண்ணை மேலாண்மை',
++  'Financials & Market': 'நிதி & சந்தை',
++  'Personal & System': 'தனிப்பட்ட & அமைப்பு',
++};
++const sectionTitle = (s: string, lang: string) => (lang === 'ta' ? SECTION_TA[s] || s : s);
++
+ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
+   const { isAdmin } = useAuth();
+-  const { t } = useLanguage();
++  const { t, language } = useLanguage();
+ 
+   const navSections = [
+     {
+@@ -75,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
+ 
+       {/* Sidebar container - Collapsible on PC/Laptop & Slide-in Drawer on Mobile */}
+       <aside
+-        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-zinc-200/80 bg-white/95 backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-950/95 transition-all duration-300 ease-in-out lg:static lg:z-auto ${
++        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-zinc-200/80 bg-white/95 backdrop-blur-2xl dark:border-white/10 dark:bg-zinc-950/95 transition-all duration-300 ease-in-out lg:static lg:h-full lg:z-auto ${
+           open
+             ? 'w-72 sm:w-64 translate-x-0 opacity-100 shadow-2xl lg:shadow-none lg:w-64'
+             : '-translate-x-full w-0 opacity-0 pointer-events-none lg:w-0 lg:opacity-0 lg:-translate-x-full lg:overflow-hidden lg:border-r-0'
+@@ -84,7 +93,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
+         <div className="w-64 flex flex-col h-full shrink-0">
+           {/* Header in mobile drawer */}
+           <div className="flex h-16 items-center justify-between px-6 border-b border-zinc-200/80 dark:border-white/10 lg:hidden shrink-0">
+-            <span className="font-bold text-zinc-900 dark:text-white">AgriGuard Navigation</span>
++            <span className="font-bold text-zinc-900 dark:text-white">{language === 'ta' ? 'வழிசெலுத்தல்' : 'AgriGuard Navigation'}</span>
+             <button
+               onClick={onClose}
+               className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/10"
+@@ -98,7 +107,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
+             {navSections.map((section, idx) => (
+               <div key={idx} className="space-y-1">
+                 <h3 className="px-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+-                  {section.title}
++                  {sectionTitle(section.title, language)}
+                 </h3>
+                 {section.items.map((item) => {
+                   const Icon = item.icon;
+@@ -125,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
+                       </div>
+                       {item.badge && (
+                         <span className="rounded-md bg-zinc-200 text-zinc-900 dark:bg-white/20 dark:text-white px-1.5 py-0.5 text-[10px] font-bold">
+-                          {item.badge}
++                          {item.badge === 'Admin' && language === 'ta' ? 'நிர்வாகி' : item.badge}
+                         </span>
+                       )}
+                     </NavLink>
+@@ -137,8 +146,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
+ 
+           <div className="p-4 border-t border-zinc-200/80 dark:border-white/10 text-center shrink-0">
+             <div className="rounded-xl bg-zinc-100/80 p-3 text-xs text-zinc-800 dark:bg-white/5 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/10 backdrop-blur-md">
+-              <span className="font-semibold block mb-0.5">AgriGuard Enterprise</span>
+-              <span className="text-[11px] text-zinc-500 dark:text-zinc-400">v1.0.0 • SQLite Offline Ready</span>
++              <span className="font-semibold block mb-0.5">{language === 'ta' ? 'அக்ரிகார்டு எண்டர்பிரைஸ்' : 'AgriGuard Enterprise'}</span>
++              <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{language === 'ta' ? 'v1.0.0 • ஆஃப்லைன் தயார்' : 'v1.0.0 • SQLite Offline Ready'}</span>
+             </div>
+           </div>
+         </div>
+diff --git a/frontend/src/layouts/AppLayout.tsx b/frontend/src/layouts/AppLayout.tsx
+index 86f1d68..36829bf 100644
+--- a/frontend/src/layouts/AppLayout.tsx
++++ b/frontend/src/layouts/AppLayout.tsx
+@@ -32,7 +32,7 @@ export const AppLayout: React.FC = () => {
+   }, []);
+ 
+   return (
+-    <div className="relative flex min-h-[100dvh] w-full max-w-full overflow-x-hidden bg-zinc-100/60 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
++    <div className="relative flex h-[100dvh] w-full max-w-full overflow-hidden bg-zinc-100/60 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
+       {/* Monochromatic Aesthetic Ambient Glows */}
+       <div className="pointer-events-none fixed -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-zinc-300/40 blur-[140px] dark:bg-white/[0.04]" />
+       <div className="pointer-events-none fixed top-1/2 -left-40 h-[500px] w-[500px] rounded-full bg-zinc-200/50 blur-[140px] dark:bg-white/[0.03]" />
+@@ -40,13 +40,13 @@ export const AppLayout: React.FC = () => {
+ 
+       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+       
+-      <div className="flex flex-1 flex-col min-w-0 w-full max-w-full overflow-x-hidden relative z-10">
++      <div className="flex flex-1 flex-col min-w-0 w-full max-w-full h-full relative z-10">
+         <Navbar
+           onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+           unreadCount={unreadCount}
+         />
+         
+-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-5 lg:p-8 pb-28 sm:pb-32 lg:pb-8 min-w-0 w-full max-w-full">
++        <main className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-3 sm:p-5 lg:p-8 pb-28 sm:pb-32 lg:pb-8 min-w-0 w-full max-w-full">
+           <div className="mx-auto max-w-7xl w-full min-w-0">
+             <Outlet />
+           </div>
+diff --git a/frontend/src/pages/Dashboard.tsx b/frontend/src/pages/Dashboard.tsx
+index c71cf11..da00641 100644
+--- a/frontend/src/pages/Dashboard.tsx
++++ b/frontend/src/pages/Dashboard.tsx
+@@ -9,6 +9,8 @@ import type { DashboardStats, Task } from '../types';
+ import { StatCard } from '../components/StatCard';
+ import { LoadingSkeleton, EmptyState } from '../components/EmptyState';
+ import { useLanguage } from '../context/LanguageContext';
++import { LeafImage } from '../components/LeafImage';
++import { translateTask, translateLabel, TASK_TYPE_TA } from '../utils/tamilTranslations';
+ import { useTheme } from '../context/ThemeContext';
+ import {
+   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend
+@@ -54,9 +56,9 @@ export const Dashboard: React.FC = () => {
+   const chartData = [
+     {
+       name: language === 'ta' ? 'நிதி நிலவரம்' : 'Financials (₹)',
+-      Expenses: stats?.total_cost || 0,
+-      Revenue: stats?.revenue || 0,
+-      NetProfit: stats?.profit || 0,
++      [language === 'ta' ? 'செலவுகள்' : 'Expenses']: stats?.total_cost || 0,
++      [language === 'ta' ? 'வருவாய்' : 'Revenue']: stats?.revenue || 0,
++      [language === 'ta' ? 'நிகர லாபம்' : 'NetProfit']: stats?.profit || 0,
+     },
+   ];
+ 
+@@ -134,7 +136,7 @@ export const Dashboard: React.FC = () => {
+         <StatCard
+           title={t('dash_active_crops')}
+           value={stats?.crops ?? 0}
+-          subtitle={`${stats?.expected_yield_kg ?? 0} kg expected`}
++          subtitle={language === 'ta' ? `${stats?.expected_yield_kg ?? 0} கிலோ எதிர்பார்ப்பு` : `${stats?.expected_yield_kg ?? 0} kg expected`}
+           icon={Leaf}
+           color="blue"
+         />
+@@ -148,7 +150,7 @@ export const Dashboard: React.FC = () => {
+         <StatCard
+           title={t('dash_net_profit')}
+           value={`₹${(stats?.profit ?? 0).toLocaleString()}`}
+-          subtitle={(stats?.profit ?? 0) >= 0 ? 'Healthy financial margin' : 'Negative balance'}
++          subtitle={(stats?.profit ?? 0) >= 0 ? (language === 'ta' ? 'ஆரோக்கியமான லாப விகிதம்' : 'Healthy financial margin') : (language === 'ta' ? 'எதிர்மறை இருப்பு' : 'Negative balance')}
+           icon={TrendingUp}
+           color={(stats?.profit ?? 0) >= 0 ? 'emerald' : 'amber'}
+         />
+@@ -190,17 +192,17 @@ export const Dashboard: React.FC = () => {
+                 />
+                 <Legend wrapperStyle={{ fontSize: '12px', color: theme === 'dark' ? '#e4e4e7' : '#27272a' }} />
+                 <Bar
+-                  dataKey="Expenses"
++                  dataKey={language === 'ta' ? 'செலவுகள்' : 'Expenses'}
+                   fill={theme === 'dark' ? '#52525b' : '#94a3b8'}
+                   radius={[6, 6, 0, 0]}
+                 />
+                 <Bar
+-                  dataKey="Revenue"
++                  dataKey={language === 'ta' ? 'வருவாய்' : 'Revenue'}
+                   fill={theme === 'dark' ? '#e4e4e7' : '#18181b'}
+                   radius={[6, 6, 0, 0]}
+                 />
+                 <Bar
+-                  dataKey="NetProfit"
++                  dataKey={language === 'ta' ? 'நிகர லாபம்' : 'NetProfit'}
+                   fill={theme === 'dark' ? '#a1a1aa' : '#52525b'}
+                   radius={[6, 6, 0, 0]}
+                 />
+@@ -232,7 +234,7 @@ export const Dashboard: React.FC = () => {
+                     <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 block group-hover:text-black dark:group-hover:text-white transition">
+                       {t('dash_diagnose_leaf')}
+                     </span>
+-                    <span className="text-[10px] text-slate-400">Google Gemini & Neural Classifier</span>
++                    <span className="text-[10px] text-slate-400">{language === 'ta' ? 'கூகுள் ஜெமினி & நியூரல் வகைப்படுத்தி' : 'Google Gemini & Neural Classifier'}</span>
+                   </div>
+                 </div>
+                 <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-black dark:group-hover:text-white transition" />
+@@ -250,7 +252,7 @@ export const Dashboard: React.FC = () => {
+                     <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 block group-hover:text-black dark:group-hover:text-white transition">
+                       {t('dash_record_harvest')}
+                     </span>
+-                    <span className="text-[10px] text-slate-400">Record Yield & Sale Price</span>
++                    <span className="text-[10px] text-slate-400">{language === 'ta' ? 'விளைச்சல் & விற்பனை விலையை பதிவு செய்' : 'Record Yield & Sale Price'}</span>
+                   </div>
+                 </div>
+                 <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-black dark:group-hover:text-white transition" />
+@@ -290,13 +292,13 @@ export const Dashboard: React.FC = () => {
+                     </button>
+                     <div className="min-w-0 flex-1">
+                       <p className={`text-sm font-medium truncate ${task.completed ? 'line-through text-slate-400' : 'text-slate-800 dark:text-slate-200'}`}>
+-                        {task.title}
++                        {translateTask(task.title, language === 'ta')}
+                       </p>
+                       <span className="text-[11px] text-slate-400 flex flex-wrap items-center gap-1 mt-0.5">
+                         <Clock className="h-3 w-3 shrink-0" />
+-                        <span>Due {task.due_date}</span>
++                        <span>{language === 'ta' ? 'கெடு' : 'Due'} {task.due_date}</span>
+                         <span className="capitalize px-1.5 py-0.2 rounded-sm bg-zinc-100 dark:bg-white/10 text-[10px] text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-white/10">
+-                          {task.task_type.replace('_', ' ')}
++                          {language === 'ta' ? (TASK_TYPE_TA[task.task_type] || task.task_type) : task.task_type.replace('_', ' ')}
+                         </span>
+                       </span>
+                     </div>
+@@ -336,20 +338,13 @@ export const Dashboard: React.FC = () => {
+               {stats.recent_disease.map((diag) => (
+                 <div key={diag.id} className="flex items-center justify-between gap-3 py-3 min-w-0">
+                   <div className="flex items-center gap-3 min-w-0 flex-1">
+-                    <img
+-                      src={diag.image_url}
+-                      alt="Crop leaf"
+-                      className="h-10 w-10 rounded-lg object-cover border border-zinc-200 dark:border-white/15 shrink-0"
+-                      onError={(e) => {
+-                        (e.target as HTMLElement).style.display = 'none';
+-                      }}
+-                    />
++                    <LeafImage src={diag.image_url} className="h-10 w-10" />
+                     <div className="min-w-0 flex-1">
+                       <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
+-                        {diag.predicted_label ? diag.predicted_label.replace('___', ' - ').replace(/_/g, ' ') : 'Demo analysis'}
++                        {diag.predicted_label ? translateLabel(diag.predicted_label, language === 'ta') : (language === 'ta' ? 'டெமோ பகுப்பாய்வு' : 'Demo analysis')}
+                       </p>
+                       <p className="text-[11px] text-slate-400 truncate">
+-                        {diag.created_at?.slice(0, 10)} • {diag.mode === 'model' ? `${((diag.confidence || 0) * 100).toFixed(1)}% confidence` : 'Demo mode'}
++                        {diag.created_at?.slice(0, 10)} • {diag.mode === 'model' ? (language === 'ta' ? `${((diag.confidence || 0) * 100).toFixed(1)}% நம்பகத்தன்மை` : `${((diag.confidence || 0) * 100).toFixed(1)}% confidence`) : (language === 'ta' ? 'டெமோ முறை' : 'Demo mode')}
+                       </p>
+                     </div>
+                   </div>
+@@ -358,7 +353,7 @@ export const Dashboard: React.FC = () => {
+                       ? 'bg-zinc-900 text-white border-zinc-800 dark:bg-white dark:text-black dark:border-white'
+                       : 'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-white/10 dark:text-zinc-300 dark:border-white/10'
+                   }`}>
+-                    {diag.mode}
++                    {diag.mode === 'model' ? (language === 'ta' ? 'மாடல்' : 'model') : diag.mode}
+                   </span>
+                 </div>
+               ))}
+diff --git a/frontend/src/pages/DiseaseHistory.tsx b/frontend/src/pages/DiseaseHistory.tsx
+index cb70662..d5aaa96 100644
+--- a/frontend/src/pages/DiseaseHistory.tsx
++++ b/frontend/src/pages/DiseaseHistory.tsx
+@@ -5,6 +5,7 @@ import type { DiseaseHistoryItem } from '../types';
+ import { Modal } from '../components/Modal';
+ import { EmptyState, LoadingSkeleton } from '../components/EmptyState';
+ import { useLanguage } from '../context/LanguageContext';
++import { LeafImage } from '../components/LeafImage';
+ import { translateTreatment } from '../utils/tamilTranslations';
+ 
+ export const DiseaseHistory: React.FC = () => {
+@@ -97,14 +98,7 @@ export const DiseaseHistory: React.FC = () => {
+             >
+               <div>
+                 <div className="flex items-center gap-3">
+-                  <img
+-                    src={item.image_url}
+-                    alt="Scanned Leaf"
+-                    className="h-16 w-16 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0"
+-                    onError={(e) => {
+-                      (e.target as HTMLElement).style.display = 'none';
+-                    }}
+-                  />
++                  <LeafImage src={item.image_url} className="h-16 w-16" />
+                   <div className="min-w-0 flex-1">
+                     <div className="flex items-center justify-between">
+                       <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-white/10 border border-zinc-200 dark:border-white/15 px-2 py-0.5 rounded-md">
+diff --git a/frontend/src/utils/tamilTranslations.ts b/frontend/src/utils/tamilTranslations.ts
+index 5dfa125..4f9233a 100644
+--- a/frontend/src/utils/tamilTranslations.ts
++++ b/frontend/src/utils/tamilTranslations.ts
+@@ -95,3 +95,37 @@ export function translateTreatment(text: string, isTamil: boolean): string {
+ 
+   return text;
+ }
++
++export const TASK_TYPE_TA: Record<string, string> = {
++  sowing: 'விதைப்பு', irrigation: 'நீர்ப்பாசனம்', fertilization: 'உரமிடல்',
++  pest_inspection: 'பூச்சி ஆய்வு', harvesting: 'அறுவடை', other: 'மற்றவை',
++};
++const CROP_TA: Record<string, string> = {
++  tomato: 'தக்காளி', potato: 'உருளைக்கிழங்கு', rice: 'நெல்', corn: 'மக்காச்சோளம்', maize: 'மக்காச்சோளம்',
++  pepper: 'மிளகாய்', apple: 'ஆப்பிள்', grape: 'திராட்சை', wheat: 'கோதுமை', cotton: 'பருத்தி',
++};
++const COND_TA: Record<string, string> = {
++  healthy: 'ஆரோக்கியம்', 'early blight': 'முன்கூட்டிய கருகல் நோய்', 'late blight': 'பின்பருவ கருகல் நோய்',
++  'bacterial spot': 'பாக்டீரியா இலைப்புள்ளி', 'leaf mold': 'இலை பூஞ்சை', 'leaf spot': 'இலைப்புள்ளி',
++  'septoria leaf spot': 'செப்டோரியா இலைப்புள்ளி', 'yellow leaf curl virus': 'மஞ்சள் இலை சுருள் வைரஸ்',
++  'mosaic virus': 'மொசைக் வைரஸ்', 'leaf blast': 'குலைநோய்', 'brown spot': 'பழுப்புப் புள்ளி',
++};
++/** "Tomato___Early_blight" -> "தக்காளி - முன்கூட்டிய கருகல் நோய்" in Tamil mode */
++export function translateLabel(label: string, isTamil: boolean): string {
++  const parts = label.split('___').map(p => p.replace(/_/g, ' ').trim());
++  if (!isTamil) return parts.join(' - ');
++  const out = parts.map((p, i) => {
++    const k = p.toLowerCase();
++    return (i === 0 ? CROP_TA[k] : COND_TA[k]) || COND_TA[k] || CROP_TA[k] || p;
++  });
++  return out.join(' - ');
++}
++
++const TASK_TITLE_TA: Record<string, string> = {
++  'Drip fertigation with potassium nitrate': 'பொட்டாசியம் நைட்ரேட்டுடன் சொட்டு நீர் உரமிடல்',
++  'Scout lower leaves for early blight target spots': 'முன்கூட்டிய கருகல் புள்ளிகளுக்காக கீழ் இலைகளை ஆய்வு செய்யவும்',
++  'Water depth regulation before panicle emergence': 'கதிர் வெளிவருவதற்கு முன் நீர் மட்டத்தை சீராக்கவும்',
++};
++export function translateTask(title: string, isTamil: boolean): string {
++  return isTamil ? TASK_TITLE_TA[title] || translateTreatment(title, true) : title;
++}
