@@ -5,6 +5,7 @@ import type { DiseaseHistoryItem } from '../types';
 import { Modal } from '../components/Modal';
 import { EmptyState, LoadingSkeleton } from '../components/EmptyState';
 import { useLanguage } from '../context/LanguageContext';
+import { LeafImage } from '../components/LeafImage';
 import { translateTreatment } from '../utils/tamilTranslations';
 
 export const DiseaseHistory: React.FC = () => {
@@ -97,14 +98,7 @@ export const DiseaseHistory: React.FC = () => {
             >
               <div>
                 <div className="flex items-center gap-3">
-                  <img
-                    src={item.image_url}
-                    alt="Scanned Leaf"
-                    className="h-16 w-16 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLElement).style.display = 'none';
-                    }}
-                  />
+                  <LeafImage src={item.image_url} className="h-16 w-16" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 bg-zinc-100 dark:bg-white/10 border border-zinc-200 dark:border-white/15 px-2 py-0.5 rounded-md">
